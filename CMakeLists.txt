@@ -4,41 +4,36 @@ project(td-game LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
-#set(BUILD_SHARED_LIBS ON)
+#set(EXECUTABLE_OUTPUT_PATH "${PROJECT_SOURCE_DIR}/bin")
+#set(LIBRARY_OUTPUT_PATH "${PROJECT_SOURCE_DIR}/bin")
 
-set(GLFW_BUILD_DOCS OFF)
-set(GLFW_BUILD_TESTS OFF)
-set(GLFW_BUILD_EXAMPLES OFF)
-add_subdirectory(lib/glfw)
+set (BIN ${CMAKE_CURRENT_SOURCE_DIR}/build/bin)
+set (DLL ${CMAKE_CURRENT_SOURCE_DIR}/build/bin)
+#set (LIB ${CMAKE_CURRENT_SOURCE_DIR}/build/lib)
 
-#add_definitions(-DGLFW_DLL)
-add_definitions(-DGLFW_INCLUDE_NONE)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${DLL}) 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN}) 
+#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LIB}) 
 
-add_subdirectory(lib/glm)
+add_subdirectory(lib)
 
-set(BUILD_SHARED_LIBS ON)
+file(GLOB ENGINE_SOURCES "src/*.cpp")
 
-set(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
-set(ASSIMP_BUILD_SAMPLES OFF)
-set(ASSIMP_BUILD_TESTS OFF)
-set(ASSIMP_NO_EXPORT ON)
-add_subdirectory(lib/assimp)
-
-include_directories(lib/glfw/include/
-                    lib/glm/
-                    lib/assimp/include/
-                    lib/stb/
-                    src/)
-                  
-file(GLOB ENGINE_SOURCES src/*.cpp)
+#set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 add_library(engine STATIC ${ENGINE_SOURCES})
 
-if(MSVC)
-    target_link_libraries(engine opengl32 glfw assimp)
-else()
-    target_link_libraries(engine opengl32 glfw assimp stdc++fs)
+target_include_directories(
+	engine PUBLIC
+		lib/glfw/include/
+        lib/assimp/include/
+        src/)
+
+target_link_libraries(engine opengl32 glfw glm assimp stb)
+if(NOT MSVC)
+    target_link_libraries(engine stdc++fs)
 endif()
 
 add_executable(${PROJECT_NAME} src/target/main.cpp)
+
 target_link_libraries(${PROJECT_NAME} engine)
