@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.8)
+
 # GLFW
 set(BUILD_SHARED_LIBS OFF)
 
@@ -28,3 +30,21 @@ target_include_directories(glm INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/glm")
 #STB
 add_library(stb INTERFACE)
 target_include_directories(stb INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/stb")
+
+#LuaBridge
+add_subdirectory(LuaBridge/Source)
+
+
+# Lua 5.2, C++11  (from LuaBridge/Tests/Lua/Lua.5.2.0)
+set(LUABRIDGE_TEST_LUA52_FILES
+  "${CMAKE_CURRENT_SOURCE_DIR}/LuaBridge/Tests/Lua/LuaLibrary.h"
+  "${CMAKE_CURRENT_SOURCE_DIR}/LuaBridge/Tests/Lua/LuaLibrary5.2.0.cpp"
+)
+
+add_library(Lua52 STATIC ${LUABRIDGE_TEST_LUA52_FILES})
+
+target_compile_options(Lua52
+  PUBLIC -DLUABRIDGEDEMO_LUA_VERSION=502
+)
+
+target_include_directories(Lua52 PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/LuaBridge/Tests/")

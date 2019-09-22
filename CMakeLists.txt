@@ -27,6 +27,9 @@ target_include_directories(
 	engine PUBLIC
 		lib/glfw/include/
         lib/assimp/include/
+		lib/LuaBridge/Source/LuaBridge/
+#		lib/LuaBridge/Tests/Lua/Lua.5.2.0/src/
+		lib/LuaBridge/Tests/Lua/
         src/)
 
 target_link_libraries(engine opengl32 glfw glm assimp stb)
@@ -36,4 +39,4 @@ endif()
 
 add_executable(${PROJECT_NAME} src/target/main.cpp)
 
-target_link_libraries(${PROJECT_NAME} engine)
+target_link_libraries(${PROJECT_NAME} engine LuaBridge Lua52)

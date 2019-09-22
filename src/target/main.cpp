@@ -3,20 +3,32 @@
 #include "WindowGLFW.hpp"
 #include "Input.hpp"
 
+#include <LuaLibrary.h>
+#include <LuaBridge.h>
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+using luabridge::LuaRef;
+using luabridge::getGlobal;
+
 
 int main(int argc, char const* argv[])
 {
+	lua_State* L = luaL_newstate();
+	luaL_dofile(L, "script.lua");
+	luaL_openlibs(L);
+	lua_pcall(L, 0, 0, 0);
+
+	LuaRef t_window = getGlobal(L, "window");
+	std::string titleString = t_window["title"].cast<std::string>();
+	int width = t_window["width"].cast<int>();
+	int height = t_window["height"].cast<int>();
+	bool resizable = t_window["resizable"].cast<bool>();
+
+
 	WindowGLFW window;
-	window.create(640, 480, "F", true);
+	window.create(width, height, titleString, resizable);
 
 	Input input;
 	input.init(window);
-
-	Assimp::Importer importer;
 
 	while (!window.shouldClose())
 	{

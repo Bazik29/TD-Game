@@ -10,3 +10,6 @@
 [submodule "lib/stb"]
 	path = lib/stb
 	url = https://github.com/nothings/stb
+[submodule "lib/LuaBridge"]
+	path = lib/LuaBridge
+	url = https://github.com/vinniefalco/LuaBridge
