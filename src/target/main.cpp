@@ -6,6 +6,11 @@
 #include <LuaLibrary.h>
 #include <LuaBridge.h>
 
+#include <string>
+
+
+#include "ModelManager.hpp"
+
 using luabridge::LuaRef;
 using luabridge::getGlobal;
 
@@ -13,7 +18,7 @@ using luabridge::getGlobal;
 int main(int argc, char const* argv[])
 {
 	lua_State* L = luaL_newstate();
-	luaL_dofile(L, "script.lua");
+	luaL_dofile(L, "scripts/script.lua");
 	luaL_openlibs(L);
 	lua_pcall(L, 0, 0, 0);
 
@@ -22,13 +27,24 @@ int main(int argc, char const* argv[])
 	int width = t_window["width"].cast<int>();
 	int height = t_window["height"].cast<int>();
 	bool resizable = t_window["resizable"].cast<bool>();
-
+	
 
 	WindowGLFW window;
 	window.create(width, height, titleString, resizable);
 
 	Input input;
 	input.init(window);
+
+
+	LuaRef t_model = getGlobal(L, "model");
+	std::string name = t_model["name"].cast<std::string>();
+	std::string path = t_model["path"].cast<std::string>();
+
+
+	ModelManager modelManager;
+
+	modelManager.load(name, path);
+
 
 	while (!window.shouldClose())
 	{

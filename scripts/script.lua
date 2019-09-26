@@ -4,3 +4,8 @@ window = {
 	height = 480,
 	resizable = false
 }
+
+model = {
+	name = "tower",
+	path = "models/Tower.obj"
+}
