@@ -1,6 +1,4 @@
 #pragma once
-#ifndef KEK
-#define KEK
 
 #include "gl_core_4_3.hpp"
 #include <string>
@@ -69,5 +67,3 @@ public:
 	void setUniform(std::string name, float x, float y, float z);
 	void setUniform(std::string name, float x, float y, float z, float w);
 };
-
-#endif // KEK

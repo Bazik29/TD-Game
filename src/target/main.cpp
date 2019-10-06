@@ -1,65 +1,19 @@
-#include "gl_core_4_3.hpp"
 
-#include "WindowGLFW.hpp"
-#include "Input.hpp"
-
-#include <LuaLibrary.h>
-#include <LuaBridge.h>
-
-#include <string>
-
-
-#include "ModelManager.hpp"
-
-using luabridge::LuaRef;
-using luabridge::getGlobal;
-
+#include "Model.hpp"
+#include <iostream>
 
 int main(int argc, char const* argv[])
 {
-	lua_State* L = luaL_newstate();
-	luaL_dofile(L, "scripts/script.lua");
-	luaL_openlibs(L);
-	lua_pcall(L, 0, 0, 0);
+	fs::path path = "models/Tower.obj";
+	std::string name = "tower_1";
 
-	LuaRef t_window = getGlobal(L, "window");
-	std::string titleString = t_window["title"].cast<std::string>();
-	int width = t_window["width"].cast<int>();
-	int height = t_window["height"].cast<int>();
-	bool resizable = t_window["resizable"].cast<bool>();
+	Model* model = load_model(path, name);
+
+	std::cout << "-----BODY------\n";
 	
+	unload_model(name);
 
-	WindowGLFW window;
-	window.create(width, height, titleString, resizable);
-
-	Input input;
-	input.init(window);
-
-
-	LuaRef t_model = getGlobal(L, "model");
-	std::string name = t_model["name"].cast<std::string>();
-	std::string path = t_model["path"].cast<std::string>();
-
-
-	ModelManager modelManager;
-
-	modelManager.load(name, path);
-
-
-	while (!window.shouldClose())
-	{
-		input.update();
-
-		if (input.isKeyDown(Input::Keyboard::ESCAPE))
-		{
-			window.close();
-		}
-
-		gl::ClearColor(0.5f, 0.7f, 0.0f, 1.0f);
-		gl::Clear(gl::COLOR_BUFFER_BIT);
-
-		window.display();
-	}
+	std::cout << "-----END------\n";
 
 	return 0;
 }
