@@ -1,33 +1,30 @@
 #include "Model.hpp"
 
-#include <iostream>
+#include <utility>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-
-#include <utility>
-
-#include <string>
+#include <iostream>
 
 Image::Image()
 {
 	std::cout << "Image()\n";
 	path = "default";
 	data = nullptr;
-	x = 0;
-	y = 0;
+	width = 0;
+	height = 0;
 	channels = 0;
 }
 
-Image::Image(fs::path path, unsigned char* data, unsigned int x, unsigned int y, unsigned int channels)
+Image::Image(fs::path path, unsigned char* data, unsigned int width, unsigned int height, unsigned int channels)
 {
 	std::cout << "Image(fs::path path, unsigned char* data, unsigned int x, unsigned int y, unsigned int channels)\n";
 
 	this->path = path;
 	this->data = data;
-	this->x = x;
-	this->y = y;
+	this->width = width;
+	this->height = height;
 	this->channels = channels;
 }
 
@@ -36,8 +33,8 @@ Image::Image(Image&& image)
 	std::cout << "Image(Image&& image)\n";
 	this->path = image.path;
 	this->data = image.data;
-	this->x = image.x;
-	this->y = image.y;
+	this->width = image.width;
+	this->height = image.height;
 	this->channels = image.channels;
 
 	image.path = "default";
@@ -57,8 +54,8 @@ Image& Image::operator=(Image&& image)
 
 	this->path = image.path;
 	this->data = image.data;
-	this->x = image.x;
-	this->y = image.y;
+	this->width = image.width;
+	this->height = image.height;
 	this->channels = image.channels;
 
 	image.path = "default";
@@ -74,7 +71,7 @@ Material::Material()
 	std::cout << "Material()\n";
 }
 
-Material::Material(Material&& material):
+Material::Material(Material&& material) :
 	textures(std::move(material.textures))
 {
 	std::cout << "Material(Material&& material)\n";
@@ -167,10 +164,10 @@ Image* load_image(fs::path path)
 	if (search != images_map.end())
 		return &search->second;
 
-	int x, y, n;
-	unsigned char* data = stbi_load(path.string().c_str(), &x, &y, &n, 0);
+	int width, height, n;
+	unsigned char* data = stbi_load(path.string().c_str(), &width, &height, &n, 0);
 
-	auto res = images_map.try_emplace(path, path, data, x, y, n);
+	auto res = images_map.try_emplace(path, path, data, width, height, n);
 
 	return &res.first->second;
 }
@@ -241,7 +238,7 @@ Mesh processMesh(aiMesh* mesh, const aiScene* scene)
 	return tmp_mesh;
 }
 
-void processNode(const aiNode* node, const aiScene* scene, std::string name)
+void processNode(const aiNode* node, const aiScene* scene, const std::string& name)
 {
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 		models_map[name].meshes.push_back(processMesh(scene->mMeshes[node->mMeshes[i]], scene));
@@ -288,4 +285,13 @@ void unload_model(std::string name)
 	search->second.meshes.clear();
 
 	models_map.erase(search);
+}
+
+Model* get_model(std::string name)
+{
+	auto search = models_map.find(name);
+	if (search != models_map.end())
+		return &search->second;
+	else
+		return nullptr;
 }

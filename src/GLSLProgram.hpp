@@ -5,6 +5,8 @@
 #include <map>
 #include "FS.hpp"
 
+#include <glm/glm.hpp>
+
 class GLSLProgramException : public std::runtime_error
 {
 public:
@@ -66,4 +68,6 @@ public:
 	void setUniform(std::string name, float x, float y);
 	void setUniform(std::string name, float x, float y, float z);
 	void setUniform(std::string name, float x, float y, float z, float w);
+
+	void setUniform(std::string name, glm::mat4 mat4);
 };

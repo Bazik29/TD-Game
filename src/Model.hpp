@@ -4,13 +4,15 @@
 
 #include "FS.hpp"
 
-#include <glm/glm.hpp>
 #include <map>
 #include <vector>
+#include <string>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+
+#include <glm/glm.hpp>
 
 enum class TextureType
 {
@@ -22,12 +24,12 @@ struct Image
 	fs::path path;
 
 	unsigned char* data;
-	int x;
-	int y;
+	int width;
+	int height;
 	int channels;
 
 	Image();
-	Image(fs::path path, unsigned char* data, unsigned int x, unsigned int y, unsigned int channels);
+	Image(fs::path path, unsigned char* data, unsigned int width, unsigned int height, unsigned int channels);
 	Image(const Image& image) = delete;
 	Image(Image&& image);
 	~Image();
@@ -83,23 +85,6 @@ struct Model
 	Model& operator=(Model&& model);
 };
 
-struct MaterialGL
-{
-	std::map<TextureType, GLuint> textures_id;
-};
-
-struct MeshGL
-{
-	GLuint VAO;
-	unsigned int size;
-
-	MaterialGL material;
-};
-
-struct ModelGL
-{
-	std::vector<MeshGL> meshes;
-};
 
 Image* load_image(fs::path path);
 void unload_image(fs::path path);
@@ -107,4 +92,4 @@ void unload_image(Image* image);
 
 Model* load_model(fs::path path, std::string name, unsigned int pFlags = aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
 void unload_model(std::string name);
-
+Model* get_model(std::string name);

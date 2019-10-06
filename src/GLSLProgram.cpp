@@ -203,3 +203,8 @@ void GLSLProgram::setUniform(std::string name, float x, float y, float z, float 
 {
 	gl::Uniform4f(uniforms[name], x, y, z, w);
 }
+
+void GLSLProgram::setUniform(std::string name, glm::mat4 mat)
+{
+	gl::UniformMatrix4fv(uniforms[name], 1, gl::FALSE_, &mat[0][0]);
+}
