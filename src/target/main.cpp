@@ -32,18 +32,19 @@ int main(int argc, char const* argv[])
 
 
 	fs::path path = "models/powergirl/powergirl.obj";
+	//fs::path path = "models/Tower.obj";
 	std::string name = "tower_1";
 
-	load_model(path, name);
+	load_model(path, name, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs);
 	ModelGL* modelGL = load_model_OGL(name);
 
 
-	glm::mat4 model = glm::mat4(1.0f);
+	glm::mat4 model = glm::mat4(1.f);
 
 	glm::mat4 view;
 	view = glm::lookAt(
-		glm::vec3(0.0f, 3.0f, -5.5f),
-		glm::vec3(0.0f, 2.0f, 0.0f),
+		glm::vec3(0.0f, 10.0f, 12.0f),
+		glm::vec3(0.0f, 5.0f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
 
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)500 / (float)500, 0.1f, 100.0f);
@@ -95,8 +96,8 @@ int main(int argc, char const* argv[])
 
 	std::cout << "-----END------\n";
 
-	//unload_model_OGL(name);
-	//unload_model(name);
+	unload_model_OGL(name);
+	unload_model(name);
 
 	std::cout << "-----RETURN------\n";
 	return 0;

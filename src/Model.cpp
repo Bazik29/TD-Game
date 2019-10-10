@@ -156,36 +156,38 @@ Model& Model::operator=(Model&& model)
 
 
 
-std::map<fs::path, Image> images_map;
+std::map<fs::path, std::shared_ptr<Image>> images_map;
 
-Image* load_image(fs::path path)
+std::shared_ptr<Image> load_image(fs::path path)
 {
 	auto search = images_map.find(path);
 	if (search != images_map.end())
-		return &search->second;
+		return search->second;
 
 	int width, height, n;
 	unsigned char* data = stbi_load(path.string().c_str(), &width, &height, &n, 0);
 
-	auto res = images_map.try_emplace(path, path, data, width, height, n);
 
-	return &res.first->second;
+	auto res = images_map.emplace(path, std::make_shared<Image>(path, data, width, height, n));
+
+	return res.first->second;
 }
 
-void unload_image(fs::path path)
+// image = nullptr
+void unload_image(std::shared_ptr<Image>& image)
 {
-	auto search = images_map.find(path);
-	if (search == images_map.end())
-		return;
+	if (image)
+	{
+		auto search = images_map.find(image->path);
 
-	stbi_image_free(search->second.data);
-
-	images_map.erase(search);
-}
-
-void unload_image(Image* image)
-{
-	unload_image(image->path);
+		image = nullptr;
+	
+		if (search->second.unique())
+		{
+			stbi_image_free(search->second->data);
+			images_map.erase(search);
+		}
+	}
 }
 
 
@@ -230,9 +232,7 @@ Mesh processMesh(aiMesh* mesh, const aiScene* scene)
 
 		fs::path fullpath = tmpPath.parent_path().string() + "\\" + str.C_Str();
 
-		Image* image = load_image(fullpath);
-
-		tmp_mesh.material.textures[TextureType::DIFFUSE] = image;
+		tmp_mesh.material.textures[TextureType::DIFFUSE] = load_image(fullpath);
 	}
 
 	return tmp_mesh;

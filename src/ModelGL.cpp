@@ -153,7 +153,7 @@ MeshGL load_mesh_OGL(const Mesh& mesh)
 
 	gl::BindVertexArray(0);
 
-	Image* img = mesh.material.textures.at(TextureType::DIFFUSE);
+	Image* img = mesh.material.textures.at(TextureType::DIFFUSE).get();
 	meshGL.materialGL.textures_id[TextureType::DIFFUSE] = load_texture_OGL(img);
 
 	return meshGL;

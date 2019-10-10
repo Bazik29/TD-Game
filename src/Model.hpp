@@ -7,6 +7,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <memory>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -40,7 +41,7 @@ struct Image
 
 struct Material
 {
-	std::map<TextureType, Image*> textures;
+	std::map<TextureType, std::shared_ptr<Image>> textures;
 
 	Material();
 	Material(const Material& material) = delete;
@@ -86,9 +87,8 @@ struct Model
 };
 
 
-Image* load_image(fs::path path);
-void unload_image(fs::path path);
-void unload_image(Image* image);
+std::shared_ptr<Image> load_image(fs::path path);
+void unload_image(std::shared_ptr<Image>& image);
 
 Model* load_model(fs::path path, std::string name, unsigned int pFlags = aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
 void unload_model(std::string name);
