@@ -98,7 +98,7 @@ ModelGL& ModelGL::operator=(ModelGL&& modelGL)
 
 
 
-std::map<std::string, ModelGL> modelsGL_map;
+std::map<std::string, std::shared_ptr<ModelGL>> modelsGL_map;
 
 GLuint load_texture_OGL(Image* image)
 {
@@ -159,28 +159,53 @@ MeshGL load_mesh_OGL(const Mesh& mesh)
 	return meshGL;
 }
 
-ModelGL* load_model_OGL(std::string name)
+std::shared_ptr<ModelGL> load_model_OGL(std::string name)
 {
 	auto search = modelsGL_map.find(name);
 	if (search != modelsGL_map.end())
-		return &search->second;
+		return search->second;
 
 	Model* model = get_model(name);
 	if (model == nullptr)
 		//throw std::runtime_error();
 		return nullptr;
 
-	modelsGL_map[name];
+
+	modelsGL_map.emplace(name, std::make_shared<ModelGL>());
 
 	for (const auto& mesh : model->meshes)
 	{
-		modelsGL_map[name].meshesGL.push_back(load_mesh_OGL(mesh));
+		modelsGL_map[name]->meshesGL.push_back(load_mesh_OGL(mesh));
 	}
 
-	return &modelsGL_map[name];
+	return modelsGL_map[name];
 }
 
 void unload_model_OGL(std::string name)
 {
 	// TODO
+}
+
+
+Entity::Entity()
+{
+	modelGL = nullptr;
+	modelMat4 = glm::mat4(1.f);
+}
+
+Entity::Entity(std::shared_ptr<ModelGL>& modelGL)
+	:modelGL(modelGL)
+{
+	modelMat4 = glm::mat4(1.f);
+}
+
+Entity::Entity(std::shared_ptr<ModelGL>& modelGL, glm::mat4 modelMat4)
+	: modelGL(modelGL)
+{
+	this->modelMat4 = modelMat4;
+}
+
+Entity::~Entity()
+{
+	this->modelGL = nullptr;
 }

@@ -50,5 +50,20 @@ struct ModelGL
 };
 
 
-ModelGL* load_model_OGL(std::string name);
+std::shared_ptr<ModelGL> load_model_OGL(std::string name);
 void unload_model_OGL(std::string name);
+
+// Entity.hpp
+#include <memory>
+#include <glm/glm.hpp>
+
+struct Entity
+{
+	Entity();
+	Entity(std::shared_ptr<ModelGL>& modelGL);
+	Entity(std::shared_ptr<ModelGL>& modelGL, glm::mat4 modelMat4);
+	~Entity();
+
+	std::shared_ptr<ModelGL> modelGL;
+	glm::mat4 modelMat4;
+};

@@ -3,7 +3,7 @@
 #include "WindowGLFW.hpp"
 #include "Input.hpp"
 
-#include "ModelGL.hpp"
+#include "Model.hpp"
 
 #include "GLSLProgram.hpp"
 
@@ -14,11 +14,23 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
+#include "Render.hpp"
+
 int main(int argc, char const* argv[])
 {
+	struct Settings
+	{
+		char* win_title = "TD-game debug";
+		unsigned int win_w = 640;
+		unsigned int win_h = 480;
+		bool win_resizable = false;
+
+		float fov = 45.f;
+	} settings;
+
 	std::cout << "-----INIT------\n";
 	WindowGLFW window;
-	window.create(500, 500, "!", 0);
+	window.create(settings.win_w, settings.win_h, settings.win_title, settings.win_resizable);
 
 	Input input;
 	input.init(window);
@@ -30,32 +42,37 @@ int main(int argc, char const* argv[])
 	shader.attach(fs::path("shaders/simple.frag"));
 	shader.link();
 
+	shader.addUniformLocation("model");
+	shader.addUniformLocation("view");
+	shader.addUniformLocation("projection");
+
 
 	fs::path path = "models/powergirl/powergirl.obj";
 	//fs::path path = "models/Tower.obj";
 	std::string name = "tower_1";
 
 	load_model(path, name, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs);
-	ModelGL* modelGL = load_model_OGL(name);
 
+	Entity test_obj(load_model_OGL(name));
 
-	glm::mat4 model = glm::mat4(1.f);
-
-	glm::mat4 view;
-	view = glm::lookAt(
-		glm::vec3(0.0f, 10.0f, 12.0f),
-		glm::vec3(0.0f, 5.0f, 0.0f),
+	glm::mat4 view = glm::lookAt(
+		glm::vec3(2.5f, 4.7f, 3.8f),
+		glm::vec3(0.0f, 2.3f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
 
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)500 / (float)500, 0.1f, 100.0f);
 
-	
-	shader.addUniformLocation("model");
-	shader.addUniformLocation("view");
-	shader.addUniformLocation("projection");
+	glm::mat4 projection = glm::perspective(glm::radians(settings.fov), (float)settings.win_w / (float)settings.win_h, 0.1f, 100.0f);
+
+	Render render;
+
+	render.setShader(shader);
 
 
 	std::cout << "-----BODY------\n";
+
+	gl::Enable(gl::DEPTH_TEST);
+	render.setClearColor();
+
 	while (!window.shouldClose())
 	{
 		input.update();
@@ -65,29 +82,14 @@ int main(int argc, char const* argv[])
 			window.close();
 		}
 
-		gl::Enable(gl::DEPTH_TEST);
+		render.clear();
 
-		gl::ClearColor(0.3f, 0.3f, 0.3f, 1.0f);
-		gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
+		render.setProjection(projection);
+		render.setView(view);
 
 
-		shader.start();
+		render.draw(test_obj);
 
-		shader.setUniform("model", model);
-		shader.setUniform("view", view);
-		shader.setUniform("projection", projection);
-
-		for (const auto& meshGL : modelGL->meshesGL)
-		{
-			GLuint id_diff = meshGL.materialGL.textures_id.at(TextureType::DIFFUSE);
-			gl::ActiveTexture(gl::TEXTURE0);
-			gl::BindTexture(gl::TEXTURE_2D, id_diff);
-
-			gl::BindVertexArray(meshGL.VAO);
-			gl::DrawElements(gl::TRIANGLES, meshGL.size, gl::UNSIGNED_INT, 0);
-			gl::BindVertexArray(0);
-		}
-		shader.stop();
 
 		window.display();
 	}
