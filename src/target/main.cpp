@@ -18,7 +18,7 @@
 
 
 #include "Render.hpp"
-
+#include "Camera.hpp"
 
 int main(int argc, char const* argv[])
 {
@@ -53,14 +53,13 @@ int main(int argc, char const* argv[])
 
 
 	fs::path path = "models/cube.obj";
-	//fs::path path = "models/Tower.obj";
-	std::string name = "tower_1";
+	std::string name = "cube";
 
 	load_model(path, name, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs);
 
 	std::vector<Entity> entites;
 	int n = 5;
-	float shift = 2.5f;
+	float shift = 3.5f;
 	for (int i = 0; i < n; i++)
 		for (int j = 0; j < n; j++)
 		{
@@ -72,8 +71,8 @@ int main(int argc, char const* argv[])
 		}
 
 	std::vector<glm::vec3> direction(entites.size());
-	std::mt19937 gen(5005);
-	std::uniform_int_distribution<> uid(-20, 20);
+	std::mt19937 gen(12345);
+	std::uniform_int_distribution<> uid(-50, 50);
 	std::generate(direction.begin(), direction.end(),
 		[&uid, &gen]() -> glm::vec3
 	{
@@ -81,19 +80,13 @@ int main(int argc, char const* argv[])
 	}
 	);
 
-
-	glm::mat4 view = glm::lookAt(
-		glm::vec3(0.0f, 0.0f, 20.0f),
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 1.0f, 0.0f));
-
-
 	glm::mat4 projection = glm::perspective(glm::radians(settings.fov), (float)settings.win_w / (float)settings.win_h, 0.1f, 100.0f);
 
 	Render render;
 
 	render.setShader(shader);
 
+	Camera camera(glm::vec3(0.0f, 0.0f, 25.0f));
 
 	std::cout << "-----BODY------\n";
 
@@ -104,6 +97,11 @@ int main(int argc, char const* argv[])
 	double lastTime = glfwGetTime();
 	float deltaTime;
 
+	input.setMousePosition(glm::dvec2((float)settings.win_w / 2, (float)settings.win_h / 2));
+	auto lastMousePos = input.getMousePosition();
+
+	bool cameraToggle = false;
+
 	while (!window.shouldClose())
 	{
 		float currentTime = glfwGetTime();
@@ -113,10 +111,47 @@ int main(int argc, char const* argv[])
 
 		input.update();
 
+		auto currMousrPos = input.getMousePosition();
+		auto mouseOffset = lastMousePos - currMousrPos;
+		lastMousePos = currMousrPos;
+
+		if (cameraToggle)
+		{
+			lastMousePos = glm::dvec2((float)settings.win_w / 2, (float)settings.win_h / 2);
+			input.setMousePosition(lastMousePos);
+
+			camera.mouseOffset(mouseOffset);
+			//camera.scrollOffset(scrollOffset);
+
+			if (input.isKey(Input::Keyboard::W))
+			{
+				camera.move(Camera::DIR::FORWARD, deltaTime);
+			}
+			if (input.isKey(Input::Keyboard::S))
+			{
+				camera.move(Camera::DIR::BACKWARD, deltaTime);
+			}
+			if (input.isKey(Input::Keyboard::A))
+			{
+				camera.move(Camera::DIR::LEFT, deltaTime);
+			}
+			if (input.isKey(Input::Keyboard::D))
+			{
+				camera.move(Camera::DIR::RIGHT, deltaTime);
+			}
+		}
+
 		if (input.isKeyDown(Input::Keyboard::ESCAPE))
 		{
 			window.close();
 		}
+
+		if (input.isKeyDown(Input::Keyboard::C))
+		{
+			cameraToggle = !cameraToggle;
+			window.cursorSetState(!cameraToggle);
+		}
+
 		if (input.isKeyDown(Input::Keyboard::NUM_1))
 		{
 			int w = 640, h = 480;
@@ -141,7 +176,8 @@ int main(int argc, char const* argv[])
 		render.clear();
 
 		render.setProjection(projection);
-		render.setView(view);
+
+		render.setView(camera.GetViewMatrix());
 
 		for (auto& enti : entites)
 		{

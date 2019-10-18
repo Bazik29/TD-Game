@@ -67,3 +67,21 @@ void WindowGLFW::resize(int widht, int height)
 	glfwSetWindowSize(handle, widht, height);
 	gl::Viewport(0, 0, widht, height);
 }
+
+void WindowGLFW::cursorHide()
+{
+	glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+}
+
+void WindowGLFW::cursorShow()
+{
+	glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+}
+
+void WindowGLFW::cursorSetState(bool state)
+{
+	if (state)
+		cursorShow();
+	else
+		cursorHide();
+}

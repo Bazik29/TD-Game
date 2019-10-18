@@ -22,4 +22,8 @@ public:
 	void display();
 	void resize(int widht, int height);
 	GLFWwindow* getHandle() { return handle; };
+
+	void cursorHide();
+	void cursorShow();
+	void cursorSetState(bool state);
 };
