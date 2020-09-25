@@ -15,28 +15,23 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${DLL})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN}) 
 #set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LIB}) 
 
-add_subdirectory(lib)
+#add_subdirectory(lib)
 
-file(GLOB ENGINE_SOURCES "src/*.cpp")
+#file(GLOB ENGINE_SOURCES "src/*.cpp")
 
-#set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+#add_library(engine STATIC ${ENGINE_SOURCES})
 
-add_library(engine STATIC ${ENGINE_SOURCES})
+#target_include_directories(
+#	engine PUBLIC
+#        src/
+#		)
 
-target_include_directories(
-	engine PUBLIC
-		lib/glfw/include/
-        lib/assimp/include/
-		lib/LuaBridge/Source/LuaBridge/
-#		lib/LuaBridge/Tests/Lua/Lua.5.2.0/src/
-		lib/LuaBridge/Tests/Lua/
-        src/)
+#target_link_libraries(engine)
 
-target_link_libraries(engine opengl32 glfw glm assimp stb)
 if(NOT MSVC)
-    target_link_libraries(engine stdc++fs)
+    target_link_libraries(stdc++fs)
 endif()
 
 add_executable(${PROJECT_NAME} src/target/main.cpp)
 
-target_link_libraries(${PROJECT_NAME} engine LuaBridge Lua52)
+#target_link_libraries(${PROJECT_NAME} engine)
