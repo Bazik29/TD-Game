@@ -25,7 +25,7 @@ target_include_directories(battle_engine PUBLIC
 		src/
 		)
 
-target_link_libraries(battle_engine glm)
+target_link_libraries(battle_engine glm::glm nlohmann_json::nlohmann_json)
 
 #if(NOT MSVC)
 #    target_link_libraries(battle_engine stdc++fs)

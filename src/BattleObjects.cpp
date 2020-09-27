@@ -1,10 +1,10 @@
 #include "BattleObjects.hpp"
 
 
-Enemy::Enemy(EnemyProperty& prop, glm::vec2 coordinate)
+Enemy::Enemy(EnemyProperty* prop, glm::vec2 coordinate)
 {
-	this->property = &prop;
-	this->current_hp = prop.max_hp;
+	this->property = prop;
+	this->current_hp = prop->max_hp;
 	this->coordinate = coordinate;
 	this->route_index = 0;
 	this->shell_counter = 0;
@@ -13,11 +13,11 @@ Enemy::Enemy(EnemyProperty& prop, glm::vec2 coordinate)
 Enemy::~Enemy() {}
 
 
-Tower::Tower(TowerProperty& prop, glm::vec2 coordinate)
+Tower::Tower(TowerProperty* prop, glm::vec2 coordinate)
 {
-	this->property = &prop;
+	this->property = prop;
 	this->coordinate = coordinate;
-	this->cooldown_time = prop.cooldown;
+	this->cooldown_time = prop->cooldown;
 	this->attack_ready = false;
 }
 

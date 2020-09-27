@@ -7,6 +7,7 @@
 
 struct EnemyProperty
 {
+	std::string description;
 	int max_hp;
 	float speed;
 	int reward;
@@ -19,7 +20,7 @@ class Enemy
 {
 public:
 	Enemy() = delete;
-	Enemy(EnemyProperty& prop, glm::vec2 coordinate);
+	Enemy(EnemyProperty* prop, glm::vec2 coordinate);
 	~Enemy();
 
 
@@ -54,7 +55,7 @@ class Tower
 {
 public:
 	Tower() = delete;
-	Tower(TowerProperty& prop, glm::vec2 coordinate);
+	Tower(TowerProperty* prop, glm::vec2 coordinate);
 	~Tower();
 
 	TowerProperty* property;

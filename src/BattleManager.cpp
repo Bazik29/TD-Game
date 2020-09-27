@@ -21,7 +21,7 @@ void BattleManager::init(int town_hp, std::vector<glm::vec2>& enemyRoute)
 	this->enemyRoute = std::move(enemyRoute);
 }
 
-void BattleManager::createEnemy(EnemyProperty& prop, glm::vec2 coordinate)
+void BattleManager::createEnemy(EnemyProperty* prop, glm::vec2 coordinate)
 {
 	enemies.emplace_back(prop, coordinate);
 }
@@ -31,7 +31,7 @@ void BattleManager::deleteEnemy(std::list<Enemy>::iterator enemyIt)
 	enemies.erase(enemyIt);
 }
 
-void BattleManager::createTower(TowerProperty& prop, glm::vec2 coordinate)
+void BattleManager::createTower(TowerProperty* prop, glm::vec2 coordinate)
 {
 	towers.emplace_back(prop, coordinate);
 }
