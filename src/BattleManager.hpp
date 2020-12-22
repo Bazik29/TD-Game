@@ -1,7 +1,6 @@
 #pragma once
 
 #include "BattleObjects.hpp"
-
 #include <list>
 
 class BattleManager
@@ -23,7 +22,7 @@ public:
 
 	void update(float dt);
 
-private:
+//private:
 	void updateEnemies(float dt);
 	void towersAttack(float dt);
 	void moveShells(float dt);

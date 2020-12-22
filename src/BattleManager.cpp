@@ -4,6 +4,8 @@
 
 #include <cstdlib>
 
+#include <iostream>
+
 #define ENEMY_HITBOX 0.05f
 
 
@@ -18,7 +20,7 @@ BattleManager::~BattleManager()
 void BattleManager::init(int town_hp, std::vector<glm::vec2>& enemyRoute)
 {
 	this->town_hp = town_hp;
-	this->enemyRoute = std::move(enemyRoute);
+	this->enemyRoute =enemyRoute;
 }
 
 void BattleManager::createEnemy(EnemyProperty* prop, glm::vec2 coordinate)
@@ -83,7 +85,11 @@ void BattleManager::updateEnemies(float dt)
 		if (it->route_index < enemyRoute.size())
 		{
 			glm::vec2 dir = enemyRoute[it->route_index] - it->coordinate;
-			it->coordinate += glm::normalize(dir) * it->property->speed;
+			glm::vec2 dir_norm = dir;
+
+			if (dir.x != 0 && dir.y != 0)
+				dir_norm = glm::normalize(dir);
+			it->coordinate += dir_norm * it->property->speed * dt;
 
 			if (glm::length(dir) < ENEMY_HITBOX)
 			{
@@ -93,6 +99,7 @@ void BattleManager::updateEnemies(float dt)
 		{
 			damageTown(it->property->damage);
 		}
+		std::cout << it->route_index << "/25  (" << it->coordinate.x << " " << it->coordinate.y << ") \n";
 	}
 }
 
@@ -136,7 +143,9 @@ void BattleManager::moveShells(float dt)
 	for (auto it = shells.begin(), end = shells.end(); it != end; it++)
 	{
 		glm::vec2 dir = it->destination->coordinate - it->coordinate;
-		it->coordinate += glm::normalize(dir) * it->origin->property->shell_speed;
+		if (dir.x != 0 && dir.y != 0)
+			dir = glm::normalize(dir);
+		it->coordinate += dir * it->origin->property->shell_speed * dt;
 
 
 		if (glm::length(dir) < ENEMY_HITBOX)

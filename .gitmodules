@@ -4,3 +4,6 @@
 [submodule "lib/nlohmann_json"]
 	path = lib/nlohmann_json
 	url = https://github.com/nlohmann/json
+[submodule "lib/glfw"]
+	path = lib/glfw
+	url = https://github.com/glfw/glfw
