@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-#define ENEMY_HITBOX 0.05f
+#define ENEMY_HITBOX 0.1f
 
 
 BattleManager::BattleManager()
@@ -28,9 +28,9 @@ void BattleManager::createEnemy(EnemyProperty* prop, glm::vec2 coordinate)
 	enemies.emplace_back(prop, coordinate);
 }
 
-void BattleManager::deleteEnemy(std::list<Enemy>::iterator enemyIt)
+std::list<Enemy>::iterator BattleManager::deleteEnemy(std::list<Enemy>::iterator enemyIt)
 {
-	enemies.erase(enemyIt);
+	return enemies.erase(enemyIt);
 }
 
 void BattleManager::createTower(TowerProperty* prop, glm::vec2 coordinate)
@@ -38,9 +38,9 @@ void BattleManager::createTower(TowerProperty* prop, glm::vec2 coordinate)
 	towers.emplace_back(prop, coordinate);
 }
 
-void BattleManager::deleteTower(std::list<Tower>::iterator towerIt)
+std::list<Tower>::iterator BattleManager::deleteTower(std::list<Tower>::iterator towerIt)
 {
-	towers.erase(towerIt);
+	return towers.erase(towerIt);
 }
 
 void BattleManager::createShell(std::list<Tower>::iterator origin, std::list<Enemy>::iterator destination)
@@ -48,9 +48,9 @@ void BattleManager::createShell(std::list<Tower>::iterator origin, std::list<Ene
 	shells.emplace_back(&(*origin), &(*destination));
 }
 
-void BattleManager::deleteShell(std::list<Shell>::iterator shellIt)
+std::list<Shell>::iterator BattleManager::deleteShell(std::list<Shell>::iterator shellIt)
 {
-	shells.erase(shellIt);
+	return shells.erase(shellIt);
 }
 
 void BattleManager::update(float dt)
@@ -62,7 +62,8 @@ void BattleManager::update(float dt)
 
 void BattleManager::updateEnemies(float dt)
 {
-	for (auto it = enemies.begin(), end = enemies.end(); it != end; it++)
+	auto it = enemies.begin();
+	while(it != enemies.end())
 	{
 		// checking hp
 		if (it->current_hp <= 0)
@@ -70,8 +71,7 @@ void BattleManager::updateEnemies(float dt)
 			if (it->shell_counter == 0)
 			{
 				auto for_delete = it;
-				it++;
-				deleteEnemy(for_delete);
+				it = deleteEnemy(for_delete);
 				continue;
 			} else
 			{
@@ -85,13 +85,11 @@ void BattleManager::updateEnemies(float dt)
 		if (it->route_index < enemyRoute.size())
 		{
 			glm::vec2 dir = enemyRoute[it->route_index] - it->coordinate;
-			glm::vec2 dir_norm = dir;
 
 			if (dir.x != 0 && dir.y != 0)
-				dir_norm = glm::normalize(dir);
-			it->coordinate += dir_norm * it->property->speed * dt;
+				it->coordinate += glm::normalize(dir) * it->property->speed * dt;
 
-			if (glm::length(dir) < ENEMY_HITBOX)
+			if (glm::length(dir) <= ENEMY_HITBOX)
 			{
 				it->route_index++;
 			}
@@ -99,7 +97,7 @@ void BattleManager::updateEnemies(float dt)
 		{
 			damageTown(it->property->damage);
 		}
-		std::cout << it->route_index << "/25  (" << it->coordinate.x << " " << it->coordinate.y << ") \n";
+		it++;
 	}
 }
 
@@ -118,7 +116,7 @@ void BattleManager::towersAttack(float dt)
 			}
 		}
 
-		// attack nearest
+		// attack first nearest
 		if (tower->attack_ready)
 		{
 			for (auto enemy = enemies.begin(), endE = enemies.end(); enemy != endE; enemy++)
@@ -140,27 +138,22 @@ void BattleManager::towersAttack(float dt)
 
 void BattleManager::moveShells(float dt)
 {
-	for (auto it = shells.begin(), end = shells.end(); it != end; it++)
+	auto it = shells.begin();
+	while (it != shells.end())
 	{
 		glm::vec2 dir = it->destination->coordinate - it->coordinate;
 		if (dir.x != 0 && dir.y != 0)
-			dir = glm::normalize(dir);
-		it->coordinate += dir * it->origin->property->shell_speed * dt;
-
+			it->coordinate += glm::normalize(dir) * it->origin->property->shell_speed * dt;
 
 		if (glm::length(dir) < ENEMY_HITBOX)
 		{
 			int dmg = std::rand() % it->origin->property->damage_max + it->origin->property->damage_min;
 			it->destination->current_hp -= dmg;
-
-
 			it->destination->shell_counter--;
-
-			auto for_delete = it;
-			it++;
-			deleteShell(for_delete);
-			// continue;
+			it = deleteShell(it);
+			continue;
 		}
+		it++;
 	}
 }
 

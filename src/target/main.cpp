@@ -68,7 +68,9 @@ int main(int argc, char const* argv[])
 
 	battle_manager.init(100, spiral);
 
-	battle_manager.createEnemy(resMng.getEnemyProperty(0), spiral[0]);
+	battle_manager.createEnemy(resMng.getEnemyProperty(0), { 0.0, 0.0 });
+	battle_manager.createEnemy(resMng.getEnemyProperty(0), { 3.0, 3.0 });
+	battle_manager.createTower(resMng.getTowerProperty(0), { -4.0, 0.0 });
 
 
 
@@ -82,12 +84,15 @@ int main(int argc, char const* argv[])
 		{
 			window.close();
 		}
-
+		gl::ClearColor(0, 1, 1, 1);
+		gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
 		battle_manager.update(0.001);
 
 		//gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
 
 		render.draw(battle_manager.enemies);
+		render.draw(battle_manager.towers);
+		render.draw(battle_manager.shells);
 
 		window.display();
 	}

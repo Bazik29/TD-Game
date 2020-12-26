@@ -12,13 +12,13 @@ public:
 	void init(int town_hp, std::vector<glm::vec2>& enemyRoute);
 
 	void createEnemy(EnemyProperty* prop, glm::vec2 coordinate);
-	void deleteEnemy(std::list<Enemy>::iterator enemyIt);
+	std::list<Enemy>::iterator deleteEnemy(std::list<Enemy>::iterator enemyIt);
 
 	void createTower(TowerProperty* prop, glm::vec2 coordinate);
-	void deleteTower(std::list<Tower>::iterator towerIt);
+	std::list<Tower>::iterator deleteTower(std::list<Tower>::iterator towerIt);
 
 	void createShell(std::list<Tower>::iterator origin, std::list<Enemy>::iterator destination);
-	void deleteShell(std::list<Shell>::iterator shellIt);
+	std::list<Shell>::iterator deleteShell(std::list<Shell>::iterator shellIt);
 
 	void update(float dt);
 

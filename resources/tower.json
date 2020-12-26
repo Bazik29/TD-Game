@@ -1,5 +1,5 @@
 {
-	"cooldown": 1.2,
+	"cooldown": 0.05,
 	"damage_max": 5,
 	"damage_min": 3,
 	"description": "something about tower or name",

@@ -37,8 +37,11 @@ private:
 	MeshGL tower;
 	MeshGL shell;
 
-	glm::vec3 colorE = glm::vec3(1.f, 0.f, 0.f);
+	glm::mat4 view;
+	glm::mat4 projection;
 
+	glm::vec3 colorE = glm::vec3(1.f, 0.f, 0.f);
+	glm::vec3 colorT = glm::vec3(0.f, 1.f, 0.f);
 };
 
 
