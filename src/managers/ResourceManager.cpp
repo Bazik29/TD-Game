@@ -104,7 +104,7 @@ void ResourceManager::loadLevel(int id, std::string path_to_json)
         this->levels[id].queue.data.emplace_back(getEnemy(en_id), number, delay);
     }
 
-    this->levels[id].way.points = j["way"].get<std::vector<glm::vec2>>();
+    this->levels[id].way.fromVector(j["way"].get<std::vector<glm::vec2>>());
 }
 
 Level* ResourceManager::getLevel(int id)

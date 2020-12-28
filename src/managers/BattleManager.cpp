@@ -43,7 +43,7 @@ void BattleManager::spawnEnemy(Enemy* enemy)
     e.current_hp = enemy->hp;
     e.haunt_shells = 0;
     e.way_point = 0;
-    e.coordinate = level->way.points[e.way_point];
+    e.coordinate = level->way[e.way_point];
     enemies.push_back(e);
 }
 
@@ -97,8 +97,8 @@ void BattleManager::updateEnemies(float dt)
         }
 
         // moving enemies
-        if (it->way_point < level->way.points.size()) {
-            glm::vec2 dir = level->way.points[it->way_point] - it->coordinate;
+        if (it->way_point < level->way.size()) {
+            glm::vec2 dir = level->way[it->way_point] - it->coordinate;
 
             if (dir.x != 0 || dir.y != 0)
                 it->coordinate += glm::normalize(dir) * it->enemy->speed * dt;

@@ -62,6 +62,8 @@ set(GAME_LOGIC_HPP
 set(GAME_LOGIC_CPP 
 	src/managers/BattleManager.cpp
 	src/managers/ResourceManager.cpp
+
+	src/gameObjects/Way.cpp
 )
 
 add_library(game_logic STATIC ${GAME_LOGIC_HPP} ${GAME_LOGIC_CPP})
