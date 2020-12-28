@@ -100,11 +100,17 @@ void ResourceManager::loadLevel(int id, std::string path_to_json)
     }
 
     auto queue = j["queue"].get<std::vector<json>>();
-    for (auto& item : queue) {
-        auto en_id = item["enemy_id"].get<int>();
-        auto number = item["number"].get<unsigned int>();
-        auto delay = item["spawn_delay"].get<float>();
-        this->levels[id].queue.data.emplace_back(getEnemy(en_id), number, delay);
+    auto queue_size = queue.size();
+    this->levels[id].queue.resize(queue.size());
+
+    for (size_t i = 0; i < queue_size; i++) {
+        auto en_id = queue[i]["enemy_id"].get<int>();
+        auto number = queue[i]["number"].get<unsigned int>();
+        auto delay = queue[i]["spawn_delay"].get<float>();
+
+        this->levels[id].queue[i].enemy = getEnemy(en_id);
+        this->levels[id].queue[i].number = number;
+        this->levels[id].queue[i].spawn_delay = delay;
     }
 
     this->levels[id].way.fromVector(j["way"].get<std::vector<glm::vec2>>());

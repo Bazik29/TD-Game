@@ -13,26 +13,18 @@
 void BattleManager::setLevel(Level* lvl)
 {
     this->level = lvl;
-    queue_pos = 0;
-    enemy_spawns = 0;
     spawn_timer = 0;
 }
 
 void BattleManager::runQueue(float dt)
 {
-    if (queue_pos >= level->queue.data.size())
-        return;
-    if (enemy_spawns == level->queue.data[queue_pos].number) {
-        queue_pos++;
-        enemy_spawns = 0;
-    }
-
-    if (spawn_timer <= 0.f) {
-        spawnEnemy(level->queue.data[queue_pos].enemy);
-        enemy_spawns++;
-        spawn_timer = level->queue.data[queue_pos].spawn_delay;
-    } else {
-        spawn_timer -= dt;
+    if (!level->queue.isEnd()) {
+        if (spawn_timer <= 0.f) {
+            spawnEnemy(level->queue.getNextEnemy());
+            spawn_timer = level->queue.getSpawnDelay();
+        } else {
+            spawn_timer -= dt;
+        }
     }
 }
 

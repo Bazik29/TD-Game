@@ -30,8 +30,7 @@ private:
     void damageTown(int damage);
 
     Level* level;
-    int queue_pos;
-    int enemy_spawns;
+
     float spawn_timer;
     std::list<EnemyEntity> enemies;
 };
