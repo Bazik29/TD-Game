@@ -79,8 +79,8 @@ void Renderer::draw(const std::list<EnemyEntity>& enemies)
         shader.setUniform("color", en.enemy->color);
         shader.setUniform("model", glm::translate(glm::mat4(1.0f), glm::vec3(en.coordinate, 0.0f)));
 
-        gl::BindVertexArray(en.enemy->meshGL->VAO);
-        gl::DrawElements(gl::TRIANGLES, en.enemy->meshGL->size, gl::UNSIGNED_INT, 0);
+        gl::BindVertexArray(en.enemy->meshGL->getVAO());
+        gl::DrawElements(gl::TRIANGLES, en.enemy->meshGL->getSize(), gl::UNSIGNED_INT, 0);
         gl::BindVertexArray(0);
 
         shader.stop();

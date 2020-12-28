@@ -14,18 +14,19 @@ MeshGL* ResourceManager::makeMeshGL(std::string id, std::vector<glm::vec2>& vert
 {
     auto it = this->meshesGL.find(id);
     if (it == this->meshesGL.end()) {
+        GLuint VAO, VBO, EBO;
+        unsigned int size = indices.size();
 
-        this->meshesGL[id].size = indices.size();
-        gl::GenVertexArrays(1, &this->meshesGL[id].VAO);
-        gl::GenBuffers(1, &this->meshesGL[id].VBO);
-        gl::GenBuffers(1, &this->meshesGL[id].EBO);
+        gl::GenVertexArrays(1, &VAO);
+        gl::GenBuffers(1, &VBO);
+        gl::GenBuffers(1, &EBO);
 
-        gl::BindVertexArray(this->meshesGL[id].VAO);
+        gl::BindVertexArray(VAO);
 
-        gl::BindBuffer(gl::ARRAY_BUFFER, this->meshesGL[id].VBO);
+        gl::BindBuffer(gl::ARRAY_BUFFER, VBO);
         gl::BufferData(gl::ARRAY_BUFFER, vertices.size() * sizeof(glm::vec2), &vertices[0], gl::STATIC_DRAW);
 
-        gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, this->meshesGL[id].EBO);
+        gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, EBO);
         gl::BufferData(gl::ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], gl::STATIC_DRAW);
 
         // vertex positions
@@ -33,6 +34,8 @@ MeshGL* ResourceManager::makeMeshGL(std::string id, std::vector<glm::vec2>& vert
         gl::VertexAttribPointer(0, 2, gl::FLOAT, gl::FALSE_, sizeof(glm::vec2), (void*)0);
 
         gl::BindVertexArray(0);
+
+        this->meshesGL[id].init(VAO, VBO, EBO, size);
     }
 
     return &this->meshesGL[id];

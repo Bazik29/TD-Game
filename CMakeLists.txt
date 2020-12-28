@@ -63,6 +63,7 @@ set(GAME_LOGIC_CPP
 	src/managers/BattleManager.cpp
 	src/managers/ResourceManager.cpp
 
+	src/gameObjects/MeshGL.cpp
 	src/gameObjects/Way.cpp
 )
 
