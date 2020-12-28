@@ -1,0 +1,13 @@
+{
+	"hp": 10,
+	"speed": 5,
+	"model": {
+		"color": {
+			"x": 1,
+			"y": 0,
+			"z": 0,
+			"w": 1
+		},
+		"mesh_path": "../../resources/enemies/enemy_mesh.json"
+	}
+}

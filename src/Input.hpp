@@ -1,8 +1,8 @@
 #pragma once
 
 #include "gl_core_4_3.hpp"
-#include "GLFW/glfw3.h"
-#include "GLM/glm.hpp"
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 #include <map>
 #include <vector>
 
