@@ -12,10 +12,7 @@ public:
 
     void update(float dt);
 
-    inline const std::list<EnemyEntity>& getEnemies() const
-    {
-        return this->enemies;
-    }
+    inline const std::list<EnemyEntity>& getEnemies() const;
 
 private:
     void runQueue(float dt);
@@ -34,3 +31,8 @@ private:
     float spawn_timer;
     std::list<EnemyEntity> enemies;
 };
+
+inline const std::list<EnemyEntity>& BattleManager::getEnemies() const
+{
+    return this->enemies;
+}
