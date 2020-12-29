@@ -5,8 +5,14 @@ project(td-game LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 
-set(OPENGL_LIB GL)
-# set(OPENGL_LIB opengl32)
+if (WIN32)
+	set(OPENGL_LIB opengl32)
+endif (WIN32)
+
+if (UNIX)
+	set(OPENGL_LIB GL)
+endif (UNIX)
+
 
 set (BIN ${CMAKE_CURRENT_SOURCE_DIR}/build/bin)
 set (DLL ${CMAKE_CURRENT_SOURCE_DIR}/build/bin)
