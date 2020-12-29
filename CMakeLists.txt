@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.8)
 
 project(td-game LANGUAGES CXX)
 
+include(FetchContent)
+
 set(CMAKE_CXX_STANDARD 17)
 
 
@@ -22,25 +24,44 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${DLL})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN}) 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LIB}) 
 
-# libraries
+# library
 
-#GLM
-add_subdirectory(lib/glm)
+FetchContent_Declare(
+	glfw
+	GIT_REPOSITORY https://github.com/glfw/glfw
+	GIT_TAG 3.3.2
+)
 
-#JSON
-set(JSON_BuildTests OFF CACHE INTERNAL "")
-set(BUILD_TESTING OFF CACHE INTERNAL "")
-add_subdirectory(lib/nlohmann_json)
+FetchContent_Declare(
+	glm
+	GIT_REPOSITORY https://github.com/g-truc/glm
+	GIT_TAG 0.9.9.8
+)
 
-# GLFW
-set(BUILD_SHARED_LIBS ON)
+FetchContent_Declare(
+	json
+	GIT_REPOSITORY https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent
+	GIT_TAG v3.9.1
+)
 
-option(GLFW_BUILD_EXAMPLES "Build the GLFW example programs" OFF)
-option(GLFW_BUILD_TESTS "Build the GLFW test programs" OFF)
-option(GLFW_BUILD_DOCS "Build the GLFW documentation" OFF)
-option(GLFW_INSTALL "Generate installation target" OFF)
+FetchContent_GetProperties(glfw)
+if(NOT glfw_POPULATED)
+  FetchContent_Populate(glfw)
+  add_subdirectory(${glfw_SOURCE_DIR} ${glfw_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
 
-add_subdirectory(lib/glfw)
+FetchContent_GetProperties(glm)
+if(NOT glm_POPULATED)
+  FetchContent_Populate(glm)
+  add_subdirectory(${glm_SOURCE_DIR} ${glm_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+
+FetchContent_GetProperties(json)
+if(NOT json_POPULATED)
+  FetchContent_Populate(json)
+  add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+
 
 # gl
 add_library(gl_core STATIC src/gl_core/gl_core_4_3.hpp src/gl_core/gl_core_4_3.cpp)
