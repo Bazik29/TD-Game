@@ -12,7 +12,7 @@ public:
     EnemyWay(const EnemyWay&) = delete;
 
     void fromVector(const std::vector<glm::vec2>& vector);
-    void fromVectorGrid(const std::vector<glm::vec2>& vector, float k, float offset);
+    void fromVectorGrid(const std::vector<glm::vec2>& vector, float k);
     inline unsigned int size();
     glm::vec2& at(unsigned int n);
 

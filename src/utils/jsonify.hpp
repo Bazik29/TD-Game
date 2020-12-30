@@ -54,7 +54,7 @@ void to_json(nlohmann::json& j, const glm::vec4& vec)
         { "z", vec.z },
         { "w", vec.w }
     };
-};
+}
 
 } // namespace glm
 

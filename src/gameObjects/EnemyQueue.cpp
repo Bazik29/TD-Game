@@ -29,11 +29,12 @@ Enemy* EnemyQueue::getNextEnemy()
 {
     Enemy* enemy = _data[counter_item].enemy;
 
-    if (counter_enemy == _data[counter_item].number - 1)
+    if (counter_enemy == _data[counter_item].number - 1) {
         if (counter_item == _size - 1)
             at_end = true;
         else
             counter_item++;
+    }
 
     counter_enemy++;
     return enemy;

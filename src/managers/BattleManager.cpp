@@ -5,7 +5,7 @@
 
 BattleManager::BattleManager()
 {
-    this->level = level;
+    this->level = nullptr;
     is_run = false;
     enemy_spawn_timer = 0;
     enemy_spawn_point = glm::vec2(0.f);
@@ -67,13 +67,24 @@ void BattleManager::updateEnemies(const float& dt)
         // move
         if (it->way_point < level->enemy_way.size()) {
             glm::vec2 dir = level->enemy_way[it->way_point] - it->coordinate;
+            float dist = glm::length(dir);
 
+            glm::vec2 dir_n(0.f);
             if (dir.x != 0 || dir.y != 0)
-                it->coordinate += glm::normalize(dir) * it->enemy->speed * dt;
+                dir_n = glm::normalize(dir);
 
-            if (glm::length(dir) <= ENEMY_WAY_BOX) {
+            glm::vec2 dway = dir_n * it->enemy->speed * dt;
+            float way = glm::length(dway);
+            if (way >= dist - ENEMY_WAY_BOX && way <= dist + ENEMY_WAY_BOX) {
                 it->way_point++;
             }
+            if (way > dist + ENEMY_WAY_BOX) {
+                it->way_point++;
+                dway = dir;
+            }
+
+            it->coordinate += dway;
+
         } else {
             damageTown(it->enemy->damage);
             it = deleteEnemy(it);

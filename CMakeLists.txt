@@ -127,3 +127,7 @@ target_link_libraries(game_graphics glm::glm gl_core glfw)
 # executable
 add_executable(${PROJECT_NAME} src/target/main.cpp)
 target_link_libraries(${PROJECT_NAME} game_logic game_graphics)
+
+target_compile_options(game_logic PRIVATE -Wall -Wextra -Wpedantic)
+target_compile_options(game_graphics PRIVATE -Wall -Wextra -Wpedantic)
+target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)

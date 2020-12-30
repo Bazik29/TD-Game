@@ -22,7 +22,7 @@ private:
     Level* level;
     bool is_run;
 
-    float ENEMY_WAY_BOX = 1.0f;
+    float ENEMY_WAY_BOX = 0.01f;
 
     // auxiliary variables
     float enemy_spawn_timer;

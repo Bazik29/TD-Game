@@ -18,13 +18,8 @@
     "enemy_spawn_queue": [
         {
             "enemy_id": 1,
-            "number": 5,
+            "number": 1,
             "spawn_delay": 2
-        },
-        {
-            "enemy_id": 0,
-            "number": 10,
-            "spawn_delay": 1
         }
     ],
     "battle_field": {
@@ -36,11 +31,11 @@
                 "y": 8
             },
             {
-                "x": 6,
+                "x": 2,
                 "y": 8
             },
             {
-                "x": 6,
+                "x": 2,
                 "y": 7
             },
             {

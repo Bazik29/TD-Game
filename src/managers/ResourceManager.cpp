@@ -74,7 +74,7 @@ void ResourceManager::loadLevel(const LevelDiscription& level_discription, Level
     auto block_cells = j["battle_field"]["block_cells"].get<std::vector<glm::vec2>>();
 
     level.battle_grid.init(w, h, enemy_way_grid, block_cells);
-    level.enemy_way.fromVectorGrid(enemy_way_grid, 2.f, 1.0f);
+    level.enemy_way.fromVectorGrid(enemy_way_grid, 2.f);
     level.is_init = true;
 }
 
@@ -173,8 +173,6 @@ MeshGL* ResourceManager::loadMeshGL(std::string path_to_json)
 
 void ResourceManager::makeMeshGL(GLuint& VAO, GLuint& VBO, GLuint& EBO, std::vector<glm::vec2>& vertices, std::vector<unsigned int>& indices)
 {
-    unsigned int size = indices.size();
-
     gl::GenVertexArrays(1, &VAO);
     gl::GenBuffers(1, &VBO);
     gl::GenBuffers(1, &EBO);
