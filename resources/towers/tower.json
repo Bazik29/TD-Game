@@ -1,11 +1,12 @@
 {
     "radius": 3,
     "damage": 5,
+    "cooldown_time": 0.5,
     "model": {
         "color": {
             "x": 0,
-            "y": 1,
-            "z": 0,
+            "y": 0,
+            "z": 1,
             "w": 1
         },
         "mesh_path": "../../resources/towers/tower_mesh.json"
@@ -16,7 +17,7 @@
             "color": {
                 "x": 0,
                 "y": 1,
-                "z": 0,
+                "z": 1,
                 "w": 1
             },
             "mesh_path": "../../resources/towers/shell_mesh.json"

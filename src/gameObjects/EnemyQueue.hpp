@@ -18,6 +18,7 @@ public:
     bool isEnd();
     float getSpawnDelay();
 
+    void clear();
     inline unsigned int size();
     void resize(unsigned int n);
 
@@ -31,7 +32,7 @@ private:
 
     unsigned int counter_enemy;
     unsigned int counter_item;
-    bool is_end;
+    bool at_end;
 };
 
 inline unsigned int EnemyQueue::size()

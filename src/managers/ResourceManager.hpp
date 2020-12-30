@@ -1,25 +1,32 @@
 #pragma once
 
-#include <map>
-#include <string>
-
 #include "../gameObjects/Enemy.hpp"
 #include "../gameObjects/Level.hpp"
 #include "../gameObjects/MeshGL.hpp"
+#include "../gameObjects/Tower.hpp"
+
+#include <map>
+#include <string>
 
 class ResourceManager {
 public:
-    void loadLevel(int id, std::string path_to_json);
-    Level* getLevel(int id);
+    ResourceManager();
+    ~ResourceManager();
+
+    void fillLevelList(std::string path_to_json, std::vector<LevelDiscription>& level_list);
+    void loadLevel(const LevelDiscription& level_discription, Level& level);
 
 private:
-    std::map<std::string, MeshGL> meshesGL;
-    std::map<int, Enemy> enemies;
-    std::map<int, Level> levels;
+    std::map<int, Enemy> loaded_enemies;
+    std::map<int, Tower> loaded_towers;
+    std::map<std::string, MeshGL> loaded_meshesGL;
 
     void loadEnemy(int id, std::string path_to_json);
     Enemy* getEnemy(int id);
 
+    void loadTower(int id, std::string path_to_json);
+    Tower* getTower(int id);
+
     MeshGL* loadMeshGL(std::string path_to_json);
-    MeshGL* makeMeshGL(std::string id, std::vector<glm::vec2>& vertices, std::vector<unsigned int>& indices);
+    void makeMeshGL(GLuint& VAO, GLuint& VBO, GLuint& EBO, std::vector<glm::vec2>& vertices, std::vector<unsigned int>& indices);
 };

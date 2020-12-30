@@ -57,3 +57,17 @@ void to_json(nlohmann::json& j, const glm::vec4& vec)
 };
 
 } // namespace glm
+
+void to_json(nlohmann::json& j, const LevelDiscription& l_d)
+{
+    j = nlohmann::json {
+        { "serial_number", l_d.serial_number },
+        { "path", l_d.path }
+    };
+}
+
+void from_json(const nlohmann::json& j, LevelDiscription& l_d)
+{
+    j.at("serial_number").get_to(l_d.serial_number);
+    j.at("path").get_to(l_d.path);
+}

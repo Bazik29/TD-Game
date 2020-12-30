@@ -1,38 +1,57 @@
 #pragma once
 
-#include <list>
-
 #include "../gameObjects/EnemyEntity.hpp"
 #include "../gameObjects/Level.hpp"
 
+#include <glm/vec2.hpp>
+#include <list>
+
 class BattleManager {
-
 public:
-    void setLevel(Level* lvl);
+    BattleManager();
+    ~BattleManager();
 
-    void update(float dt);
+    inline void run();
+    inline void stop();
+    inline bool isRun();
 
-    inline const std::list<EnemyEntity>& getEnemies() const;
+    void setLevel(Level* level);
+    void update(const float& dt);
 
 private:
-    void runQueue(float dt);
-
-    void spawnEnemy(Enemy* enemy);
-    std::list<EnemyEntity>::iterator deleteEnemy(std::list<EnemyEntity>::iterator enemyIt);
-
-    void updateEnemies(float dt);
-    // void towersAttack(float dt);
-    // void moveShells(float dt);
-
-    void damageTown(int damage);
-
     Level* level;
+    bool is_run;
 
-    float spawn_timer;
-    std::list<EnemyEntity> enemies;
+    float ENEMY_WAY_BOX = 1.0f;
+
+    // auxiliary variables
+    float enemy_spawn_timer;
+    glm::vec2 enemy_spawn_point;
+    glm::vec2 enemy_kill_point;
+
+    void spawnEnemyFromQueue(const float& dt);
+    void updateEnemies(const float& dt);
+    void towersAttack(const float& dt);
+
+    void launchShell(const TowerEntity* tower, const EnemyEntity* enemy);
+
+    void damageTown(unsigned int dmg);
+
+    void createEnemy(const Enemy* enemy);
+    std::list<EnemyEntity>::iterator deleteEnemy(std::list<EnemyEntity>::iterator it);
 };
 
-inline const std::list<EnemyEntity>& BattleManager::getEnemies() const
+inline void BattleManager::run()
 {
-    return this->enemies;
+    this->is_run = true;
+}
+
+inline void BattleManager::stop()
+{
+    this->is_run = false;
+}
+
+inline bool BattleManager::isRun()
+{
+    return this->is_run;
 }

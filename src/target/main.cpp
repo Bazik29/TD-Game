@@ -1,4 +1,4 @@
-#include <WindowGLFW.hpp>
+#include "WindowGLFW.hpp"
 
 #include "../Input.hpp"
 
@@ -6,60 +6,73 @@
 #include "../managers/ResourceManager.hpp"
 #include "Renderer.hpp"
 
+#include <iostream>
+
+#include "../gameObjects/Level.hpp"
+
+struct Settings {
+    const char* win_title = "TD-game";
+    unsigned int win_w = 640;
+    unsigned int win_h = 480;
+    bool win_resizable = true;
+
+    float fov = 45.f;
+} settings;
+
 int main(int argc, char const* argv[])
 {
-
-    struct Settings {
-        char* win_title = "TD-game";
-        unsigned int win_w = 640;
-        unsigned int win_h = 480;
-        bool win_resizable = true;
-
-        float fov = 45.f;
-    } settings;
-
     WindowGLFW window;
     window.create(settings.win_w, settings.win_h, settings.win_title, settings.win_resizable);
 
     Input input;
     input.init(window);
 
-    Renderer render;
-    ResourceManager resource_manager;
-    BattleManager battle_manager;
+    try {
+        Renderer render;
+        ResourceManager resource_manager;
+        BattleManager battle_manager;
 
-    resource_manager.loadLevel(1, "../../resources/levels/way.json");
+        std::vector<LevelDiscription> levels;
+        Level level;
 
-    battle_manager.setLevel(resource_manager.getLevel(1));
+        resource_manager.fillLevelList("../../resources/levels/_levels.json", levels);
+        resource_manager.loadLevel(levels[0], level);
 
-    double lastTime = glfwGetTime();
-    float dt;
+        battle_manager.setLevel(&level);
+        battle_manager.run();
 
 
-	gl::ClearColor(0, 0, 0, 1);
-    while (!window.shouldClose()) {
-        float currentTime = glfwGetTime();
-        dt = currentTime - lastTime;
-        lastTime = currentTime;
+        double lastTime = glfwGetTime();
+        float dt;
 
-        input.update();
-        window.pollEvents();
+        gl::ClearColor(0, 0, 0, 1);
+        while (!window.shouldClose()) {
+            float currentTime = glfwGetTime();
+            dt = currentTime - lastTime;
+            lastTime = currentTime;
 
-        if (input.isKeyDown(Input::Keyboard::ESCAPE)) {
-            window.close();
+            input.update();
+            window.pollEvents();
+
+            if (input.isKeyDown(Input::Keyboard::ESCAPE)) {
+                window.close();
+                continue;
+            }
+
+            gl::Clear(gl::COLOR_BUFFER_BIT);
+
+            battle_manager.update(dt);
+
+            render.draw(level);
+
+            window.display();
         }
- 
-        gl::Clear(gl::COLOR_BUFFER_BIT);
 
-        battle_manager.update(dt);
-
-        render.draw(battle_manager.getEnemies());
-
-        window.display();
+        window.close();
+        window.destroy();
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << '\n';
     }
-
-    window.close();
-    window.destroy();
 
     return 0;
 }

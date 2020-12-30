@@ -4,10 +4,18 @@
 
 #include "MeshGL.hpp"
 
-struct Enemy {
-    unsigned int hp;
+struct Shell {
     float speed;
-    unsigned int damage;
     MeshGL* meshGL;
     glm::vec4 color;
+};
+
+struct Tower {
+    float radius;
+    unsigned int damage;
+    float cooldown_time;
+    MeshGL* meshGL;
+    glm::vec4 color;
+
+    Shell shell;
 };

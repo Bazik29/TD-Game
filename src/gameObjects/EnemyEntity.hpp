@@ -5,9 +5,11 @@
 #include "Enemy.hpp"
 
 struct EnemyEntity {
-    Enemy* enemy;
+    const Enemy* enemy;
     int current_hp;
     int haunt_shells;
     int way_point;
     glm::vec2 coordinate;
 };
+
+// TODO move
