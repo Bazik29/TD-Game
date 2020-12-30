@@ -31,7 +31,7 @@ private:
     unsigned int _size;
 
     unsigned int counter_enemy;
-    unsigned int counter_item;
+    unsigned int queue_index;
     bool at_end;
 };
 

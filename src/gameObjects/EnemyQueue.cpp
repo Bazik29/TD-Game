@@ -7,7 +7,7 @@ EnemyQueue::EnemyQueue()
     _size = 0;
     _data = nullptr;
     counter_enemy = 0;
-    counter_item = 0;
+    queue_index = 0;
     at_end = true;
 }
 
@@ -16,7 +16,7 @@ EnemyQueue::EnemyQueue(unsigned int n)
     _size = n;
     _data = new EnemyQueueItem[n];
     counter_enemy = 0;
-    counter_item = 0;
+    queue_index = 0;
     at_end = false;
 }
 
@@ -27,13 +27,20 @@ EnemyQueue::~EnemyQueue()
 
 Enemy* EnemyQueue::getNextEnemy()
 {
-    Enemy* enemy = _data[counter_item].enemy;
+    Enemy* enemy = _data[queue_index].enemy;
 
-    if (counter_enemy == _data[counter_item].number - 1) {
-        if (counter_item == _size - 1)
+    // если будет спаунится последний из группы
+    if (counter_enemy == _data[queue_index].number - 1) {
+        // если последняя группа
+        if (queue_index == _size - 1) {
             at_end = true;
-        else
-            counter_item++;
+            counter_enemy++;
+            return enemy;
+        } else {
+            queue_index++;
+            counter_enemy = 0;
+            return enemy;
+        }
     }
 
     counter_enemy++;
@@ -47,7 +54,7 @@ bool EnemyQueue::isEnd()
 
 float EnemyQueue::getSpawnDelay()
 {
-    return _data[counter_item].spawn_delay;
+    return _data[queue_index].spawn_delay;
 }
 
 void EnemyQueue::clear()
@@ -56,7 +63,7 @@ void EnemyQueue::clear()
     _size = 0;
     _data = nullptr;
     counter_enemy = 0;
-    counter_item = 0;
+    queue_index = 0;
     at_end = true;
 }
 
@@ -73,7 +80,7 @@ void EnemyQueue::resize(unsigned int n)
     _size = n;
     _data = new EnemyQueueItem[n];
     counter_enemy = 0;
-    counter_item = 0;
+    queue_index = 0;
     at_end = false;
 }
 
