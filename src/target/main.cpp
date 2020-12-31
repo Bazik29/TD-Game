@@ -19,7 +19,7 @@ struct Settings {
     float fov = 45.f;
 } settings;
 
-int main(int argc, char const* argv[])
+int main()
 {
     WindowGLFW window;
     window.create(settings.win_w, settings.win_h, settings.win_title, settings.win_resizable);
@@ -40,7 +40,6 @@ int main(int argc, char const* argv[])
 
         battle_manager.setLevel(&level);
         battle_manager.run();
-
 
         double lastTime = glfwGetTime();
         float dt;
