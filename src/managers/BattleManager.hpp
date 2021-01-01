@@ -37,7 +37,7 @@ private:
 
     void damageTown(unsigned int dmg);
 
-    void createEnemy(const Enemy* enemy);
+    void createEnemyEntity(const Enemy* enemy);
     std::list<EnemyEntity>::iterator deleteEnemy(std::list<EnemyEntity>::iterator it);
 };
 

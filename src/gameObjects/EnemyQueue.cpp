@@ -25,9 +25,9 @@ EnemyQueue::~EnemyQueue()
     delete[] _data;
 }
 
-Enemy* EnemyQueue::getNextEnemy()
+const Enemy* EnemyQueue::getNextEnemy()
 {
-    Enemy* enemy = _data[queue_index].enemy;
+    const Enemy* enemy = _data[queue_index].enemy;
 
     // если будет спаунится последний из группы
     if (counter_enemy == _data[queue_index].number - 1) {
@@ -44,6 +44,7 @@ Enemy* EnemyQueue::getNextEnemy()
     }
 
     counter_enemy++;
+
     return enemy;
 }
 

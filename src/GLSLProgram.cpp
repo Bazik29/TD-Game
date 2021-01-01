@@ -202,7 +202,22 @@ void GLSLProgram::setUniform(std::string name, glm::mat4 mat)
     gl::UniformMatrix4fv(uniforms[name], 1, gl::FALSE_, glm::value_ptr(mat));
 }
 
+void GLSLProgram::setUniform(std::string name, glm::vec3 v)
+{
+    gl::Uniform3f(uniforms[name], v.x, v.y, v.z);
+}
+
 void GLSLProgram::setUniform(std::string name, glm::vec4 v)
 {
     gl::Uniform4f(uniforms[name], v.r, v.g, v.b, v.a);
+}
+
+void GLSLProgram::setUniform(std::string name, std::vector<glm::vec4> arr)
+{
+    gl::Uniform4fv(uniforms[name], arr.size(), glm::value_ptr(arr[0]));
+}
+
+void GLSLProgram::setUniform4fv(std::string name, std::vector<float> arr) 
+{
+    gl::Uniform4fv(uniforms[name], arr.size(), &arr[0]);
 }

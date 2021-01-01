@@ -5,16 +5,16 @@
 class EnemyQueue {
 public:
     struct EnemyQueueItem {
-        Enemy* enemy = nullptr;
+        const Enemy* enemy = nullptr;
         unsigned int number = 0;
-        float spawn_delay = 0.f;
+        float spawn_delay = 0.0f;
     };
 
     EnemyQueue();
     EnemyQueue(unsigned int n);
     ~EnemyQueue();
 
-    Enemy* getNextEnemy();
+    const Enemy* getNextEnemy();
     bool isEnd();
     float getSpawnDelay();
 

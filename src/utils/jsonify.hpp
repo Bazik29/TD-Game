@@ -22,6 +22,20 @@ void from_json(const nlohmann::json& j, glm::vec2& vec)
     j.at("y").get_to(vec.y);
 }
 
+void to_json(nlohmann::json& j, const glm::uvec2& vec)
+{
+    j = nlohmann::json {
+        { "x", vec.x },
+        { "y", vec.y }
+    };
+}
+
+void from_json(const nlohmann::json& j, glm::uvec2& vec)
+{
+    j.at("x").get_to(vec.x);
+    j.at("y").get_to(vec.y);
+}
+
 void to_json(nlohmann::json& j, const glm::vec3& vec)
 {
     j = nlohmann::json {

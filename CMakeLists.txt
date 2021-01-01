@@ -74,12 +74,14 @@ target_include_directories(utils INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src/utils
 
 # GAME_SRC
 set(GAME_SRC_HPP
-	src/gameObjects/BattleGrid.hpp
+	# src/gameObjects/BattleGrid.hpp
 	src/gameObjects/EnemyEntity.hpp
+
 	src/gameObjects/EnemyQueue.hpp
 	src/gameObjects/EnemyWay.hpp
 	src/gameObjects/MeshGL.hpp
 	src/gameObjects/TowerEntity.hpp
+	src/gameObjects/BattleGridEntity.hpp
 
 	src/managers/BattleManager.hpp
 	src/managers/ResourceManager.hpp
@@ -88,16 +90,36 @@ set(GAME_SRC_HPP
 	src/Input.hpp
 	src/Renderer.hpp
 	src/WindowGLFW.hpp
+
+
+	src/logicObjects/EnemyProperty.cpp
+	src/logicObjects/EnemyProperty.hpp
+
+	src/gameObjects/Enemy.hpp
+	src/gameObjects/Enemy.cpp
+
+	src/gameObjects/EnemyEntity.hpp
+	src/gameObjects/EnemyEntity.cpp
+
+	src/renderObjects/MeshGl.hpp
+	src/renderObjects/BattleGridMeshGl.hpp
+	src/renderObjects/ElementsMeshGl.hpp
 )
 
 set(GAME_SRC_CPP
-	src/gameObjects/BattleGrid.cpp
+	# src/gameObjects/BattleGrid.cpp
 	src/gameObjects/EnemyQueue.cpp
 	src/gameObjects/EnemyWay.cpp
 	src/gameObjects/MeshGL.cpp
+	src/gameObjects/BattleGridEntity.cpp
+	src/gameObjects/EnemyEntity.cpp
 
 	src/managers/BattleManager.cpp
 	src/managers/ResourceManager.cpp
+
+	src/renderObjects/MeshGl.cpp
+	src/renderObjects/BattleGridMeshGl.cpp
+	src/renderObjects/ElementsMeshGl.cpp
 
 	src/GLSLProgram.cpp
 	src/Input.cpp

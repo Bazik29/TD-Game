@@ -68,13 +68,15 @@ void ResourceManager::loadLevel(const LevelDiscription& level_discription, Level
         level.enemy_spawn_queue[i].spawn_delay = delay;
     }
 
+    auto scale = j["battle_field"]["scale"].get<unsigned int>();
     auto w = j["battle_field"]["w"].get<unsigned int>();
     auto h = j["battle_field"]["h"].get<unsigned int>();
-    auto enemy_way_grid = j["battle_field"]["enemy_way"].get<std::vector<glm::vec2>>();
-    auto block_cells = j["battle_field"]["block_cells"].get<std::vector<glm::vec2>>();
+    auto enemy_way_grid = j["battle_field"]["enemy_way"].get<std::vector<glm::uvec2>>();
+    auto block_cells = j["battle_field"]["block_cells"].get<std::vector<glm::uvec2>>();
 
-    level.battle_grid.init(w, h, enemy_way_grid, block_cells);
-    level.enemy_way.fromVectorGrid(enemy_way_grid, 2.f);
+    level.battle_grid_entity.init(w, h, scale, enemy_way_grid, block_cells);
+    level.enemy_way.fromVectorGrid(enemy_way_grid, scale);
+
     level.is_init = true;
 }
 
@@ -92,15 +94,17 @@ void ResourceManager::loadEnemy(int id, std::string path_to_json)
     json j;
     json_file >> j;
 
-    loaded_enemies[id].hp = j["hp"].get<int>();
-    loaded_enemies[id].speed = j["speed"].get<float>();
-    loaded_enemies[id].damage = j["damage"].get<float>();
-    loaded_enemies[id].color = j["model"]["color"].get<glm::vec4>();
+    auto hp = j["hp"].get<unsigned int>();
+    auto speed = j["speed"].get<float>();
+    auto damage = j["damage"].get<unsigned int>();
+    auto color = j["color"].get<glm::vec4>();
     auto mesh_path = j["model"]["mesh_path"].get<std::string>();
-    loaded_enemies[id].meshGL = loadMeshGL(mesh_path);
+    const ElementsMeshGl* mesh = loadMeshGl(mesh_path);
+
+    loaded_enemies[id] = Enemy(EnemyProperty(hp, speed, damage, color), mesh);
 }
 
-Enemy* ResourceManager::getEnemy(int id)
+const Enemy* ResourceManager::getEnemy(int id) const
 {
     try {
         return &this->loaded_enemies.at(id);
@@ -144,6 +148,28 @@ Tower* ResourceManager::getTower(int id)
     } catch (const std::exception& e) {
         throw std::out_of_range("out_of_range ResourceManager::getTower");
     };
+}
+
+const ElementsMeshGl* ResourceManager::loadMeshGl(std::string path_to_json)
+{
+    auto it = this->loaded_meshesGl.find(path_to_json);
+    if (it != this->loaded_meshesGl.end())
+        return &it->second;
+
+    std::ifstream json_file(path_to_json);
+    if (!json_file) {
+        throw std::runtime_error(
+            "Can't open the file: '" + path_to_json + "'");
+    }
+
+    json j;
+    json_file >> j;
+
+    auto vertices = j["vertices"].get<std::vector<glm::vec2>>();
+    auto indices = j["indices"].get<std::vector<unsigned int>>();
+
+    this->loaded_meshesGl[path_to_json].create(PrimitiveType::TRIANGLES, vertices, indices);
+    return &this->loaded_meshesGl[path_to_json];
 }
 
 MeshGL* ResourceManager::loadMeshGL(std::string path_to_json)

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "BattleGrid.hpp"
 #include "EnemyEntity.hpp"
 #include "EnemyQueue.hpp"
 #include "EnemyWay.hpp"
 #include "TowerEntity.hpp"
+#include "BattleGridEntity.hpp"
 
 #include <list>
 #include <vector>
@@ -18,10 +18,10 @@ struct LevelDiscription {
 struct Level {
     bool is_init = false;
 
-    BattleGrid battle_grid;
     EnemyWay enemy_way;
     EnemyQueue enemy_spawn_queue;
 
+    BattleGridEntity battle_grid_entity;
     std::vector<TowerEntity> built_towers;
     std::list<EnemyEntity> spawned_enemies;
 };

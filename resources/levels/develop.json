@@ -28,6 +28,7 @@
         }
     ],
     "battle_field": {
+        "scale": 2,
         "w": 12,
         "h": 10,
         "enemy_way": [

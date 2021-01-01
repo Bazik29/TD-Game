@@ -4,6 +4,7 @@
 #include <gl_core_4_3.hpp>
 #include <map>
 #include <string>
+#include <vector>
 
 #include <glm/glm.hpp>
 
@@ -70,5 +71,10 @@ public:
 
     void setUniform(std::string name, glm::mat4 mat4);
 
+    void setUniform(std::string name, glm::vec3 v);
     void setUniform(std::string name, glm::vec4 v);
+
+    void setUniform(std::string name, std::vector<glm::vec4> arr);
+
+    void setUniform4fv(std::string name, std::vector<float> arr);
 };

@@ -2,6 +2,7 @@
 
 #include <glm/geometric.hpp>
 #include <iostream>
+#include <utility>
 
 BattleManager::BattleManager()
 {
@@ -40,7 +41,8 @@ void BattleManager::spawnEnemyFromQueue(const float& dt)
 {
     if (!level->enemy_spawn_queue.isEnd()) {
         if (enemy_spawn_timer <= 0.f) {
-            createEnemy(level->enemy_spawn_queue.getNextEnemy());
+            const Enemy* enemy = level->enemy_spawn_queue.getNextEnemy();
+            createEnemyEntity(enemy);
             enemy_spawn_timer = level->enemy_spawn_queue.getSpawnDelay();
         } else {
             enemy_spawn_timer -= dt;
@@ -53,8 +55,8 @@ void BattleManager::updateEnemies(const float& dt)
     auto it = level->spawned_enemies.begin();
     while (it != level->spawned_enemies.end()) {
         // hp
-        if (it->current_hp <= 0) {
-            if (it->haunt_shells == 0) {
+        if (it->getHP() <= 0) {
+            if (it->getHauntShells() == 0) {
                 auto for_delete = it;
                 it = deleteEnemy(for_delete);
                 continue;
@@ -65,28 +67,29 @@ void BattleManager::updateEnemies(const float& dt)
         }
 
         // move
-        if (it->way_point < level->enemy_way.size()) {
-            glm::vec2 dir = level->enemy_way[it->way_point] - it->coordinate;
+        if (it->getWayPoint() < level->enemy_way.size()) {
+            glm::vec2 dir = level->enemy_way[it->getWayPoint()] - it->getCoordinate();
             float dist = glm::length(dir);
 
             glm::vec2 dir_n(0.f);
             if (dir.x != 0 || dir.y != 0)
                 dir_n = glm::normalize(dir);
 
-            glm::vec2 dway = dir_n * it->enemy->speed * dt;
+            glm::vec2 dway = dir_n * it->getEnemy()->getProps().getSpeed() * dt;
             float way = glm::length(dway);
             if (way >= dist - ENEMY_WAY_BOX && way <= dist + ENEMY_WAY_BOX) {
-                it->way_point++;
+                it->incWayPoint();
             }
             if (way > dist + ENEMY_WAY_BOX) {
-                it->way_point++;
+                it->incWayPoint();
                 dway = dir;
             }
 
-            it->coordinate += dway;
+            it->move(dway);
 
         } else {
-            damageTown(it->enemy->damage);
+            auto dmg = it->getEnemy()->getProps().getDamage();
+            damageTown(dmg);
             it = deleteEnemy(it);
             continue;
         }
@@ -100,8 +103,8 @@ void BattleManager::towersAttack(const float& dt)
         if (it_t->cooldown_timer <= 0.f) {
             // launch shell
             for (auto it_e = level->spawned_enemies.begin(); it_e != level->spawned_enemies.end(); it_e++) {
-                if (glm::length(it_t->coordinate - it_e->coordinate) <= it_t->tower->radius) {
-                    it_e->haunt_shells++;
+                if (glm::length(it_t->coordinate - it_e->getCoordinate()) <= it_t->tower->radius) {
+                    it_e->incHauntShells();
                     it_t->cooldown_timer = it_t->tower->cooldown_time;
                     launchShell(&(*it_t), &(*it_e));
                 }
@@ -114,7 +117,7 @@ void BattleManager::towersAttack(const float& dt)
 void BattleManager::launchShell(const TowerEntity* tower, const EnemyEntity* enemy)
 {
     std::cout << "Shell launched from (" << tower->coordinate.x << ", " << tower->coordinate.y
-              << ") to (" << enemy->coordinate.x << ", " << enemy->coordinate.y << ")\n";
+              << ") to (" << enemy->getCoordinate().x << ", " << enemy->getCoordinate().y << ")\n";
 }
 
 void BattleManager::damageTown(unsigned int dmg)
@@ -122,15 +125,10 @@ void BattleManager::damageTown(unsigned int dmg)
     std::cout << "damageTown: -" << dmg << "\n";
 }
 
-void BattleManager::createEnemy(const Enemy* enemy)
+void BattleManager::createEnemyEntity(const Enemy* enemy)
 {
-    EnemyEntity e;
-    e.enemy = enemy;
-    e.current_hp = enemy->hp;
-    e.haunt_shells = 0;
-    e.way_point = 0;
-    e.coordinate = enemy_spawn_point;
-    level->spawned_enemies.push_back(e);
+    EnemyEntity ee(enemy, enemy_spawn_point);
+    level->spawned_enemies.push_back(std::move(ee));
 }
 
 std::list<EnemyEntity>::iterator BattleManager::deleteEnemy(std::list<EnemyEntity>::iterator it)

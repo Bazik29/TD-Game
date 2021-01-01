@@ -30,15 +30,15 @@ void EnemyWay::fromVector(const std::vector<glm::vec2>& vector)
     }
 }
 
-void EnemyWay::fromVectorGrid(const std::vector<glm::vec2>& vector, float k)
+void EnemyWay::fromVectorGrid(const std::vector<glm::uvec2>& vector, float scale)
 {
     delete[] _data;
 
     _size = vector.size();
     _data = new glm::vec2[_size];
     for (unsigned int i = 0; i < _size; i++) {
-        _data[i].x = vector[i].x * k + k/2;
-        _data[i].y = vector[i].y * k + k/2;
+        _data[i].x = vector[i].x * scale + scale/2;
+        _data[i].y = vector[i].y * scale + scale/2;
     }
 }
 

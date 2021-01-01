@@ -36,8 +36,6 @@ void WindowGLFW::create(int widht, int height, std::string title, bool resizable
 		glfwTerminate();
 		throw std::runtime_error("Number of function that failed to load: " + didLoad.GetNumMissing());
 	}
-
-	gl::Viewport(0, 0, widht, height);
 }
 
 void WindowGLFW::destroy()
@@ -65,7 +63,6 @@ void WindowGLFW::resize(int widht, int height)
 	this->widht = widht;
 	this->height = height;
 	glfwSetWindowSize(handle, widht, height);
-	gl::Viewport(0, 0, widht, height);
 }
 
 void WindowGLFW::cursorHide()

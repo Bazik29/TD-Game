@@ -22,12 +22,13 @@ struct Settings {
 int main()
 {
     WindowGLFW window;
-    window.create(settings.win_w, settings.win_h, settings.win_title, settings.win_resizable);
-
     Input input;
-    input.init(window);
-
     try {
+
+        window.create(settings.win_w, settings.win_h, settings.win_title, settings.win_resizable);
+
+        input.init(window);
+
         Renderer render;
         ResourceManager resource_manager;
         BattleManager battle_manager;
@@ -44,7 +45,9 @@ int main()
         double lastTime = glfwGetTime();
         float dt;
 
-        gl::ClearColor(0, 0, 0, 1);
+        gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL);
+
+        gl::ClearColor(0.2, 0.2, 0.2, 1);
         while (!window.shouldClose()) {
             float currentTime = glfwGetTime();
             dt = currentTime - lastTime;
@@ -67,11 +70,10 @@ int main()
             window.display();
         }
 
-        window.close();
-        window.destroy();
     } catch (const std::exception& e) {
         std::cerr << e.what() << '\n';
     }
-
+    window.close();
+    window.destroy();
     return 0;
 }
