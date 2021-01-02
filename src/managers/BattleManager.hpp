@@ -15,8 +15,15 @@ public:
     inline void stop();
     inline bool isRun();
 
+    inline const Level* getLevel() const;
+    inline const TowerEntity* getProject() const;
+
     void setLevel(Level* level);
-    void update(const float& dt);
+    void update(const float& dt, const glm::vec2 cursor);
+
+    void buildTower(const Tower* tower, glm::vec2 coord);
+
+    void setProjectTower(const Tower* tower);
 
 private:
     Level* level;
@@ -24,12 +31,18 @@ private:
 
     float ENEMY_WAY_BOX = 0.01f;
 
+    TowerEntity* tower_project = nullptr;
+
+    glm::vec2 cursor;
+    glm::uvec2 cursor_grid;
+
     // auxiliary variables
     float enemy_spawn_timer;
     glm::vec2 enemy_spawn_point;
     glm::vec2 enemy_kill_point;
 
     void spawnEnemyFromQueue(const float& dt);
+
     void updateEnemies(const float& dt);
     void towersAttack(const float& dt);
 
@@ -54,4 +67,14 @@ inline void BattleManager::stop()
 inline bool BattleManager::isRun()
 {
     return this->is_run;
+}
+
+inline const Level* BattleManager::getLevel() const
+{
+    return level;
+}
+
+inline const TowerEntity* BattleManager::getProject() const
+{
+    return tower_project;
 }

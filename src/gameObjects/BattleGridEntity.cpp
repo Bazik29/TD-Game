@@ -27,6 +27,7 @@ void BattleGridEntity::makeRoad(glm::uvec2 A, glm::uvec2 B)
 }
 
 BattleGridEntity::BattleGridEntity()
+    :_mesh()
 {
 }
 

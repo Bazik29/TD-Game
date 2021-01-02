@@ -28,13 +28,28 @@ void BattleManager::setLevel(Level* level)
     enemy_kill_point = level->enemy_way.lastPoint();
 }
 
-void BattleManager::update(const float& dt)
+void BattleManager::update(const float& dt, const glm::vec2 cursor)
 {
+    this->cursor = cursor;
+
+    if (tower_project)
+        tower_project->setCoordinate(cursor);
     if (this->is_run) {
         spawnEnemyFromQueue(dt);
         updateEnemies(dt);
         towersAttack(dt);
     }
+}
+
+void BattleManager::buildTower(const Tower* tower, glm::vec2 coord)
+{
+    level->built_towers.push_back(TowerEntity(tower, coord));
+    // hover cell color
+}
+
+void BattleManager::setProjectTower(const Tower* tower)
+{
+    tower_project = new TowerEntity(tower, cursor);
 }
 
 void BattleManager::spawnEnemyFromQueue(const float& dt)
@@ -100,29 +115,32 @@ void BattleManager::updateEnemies(const float& dt)
 void BattleManager::towersAttack(const float& dt)
 {
     for (auto it_t = level->built_towers.begin(); it_t != level->built_towers.end(); it_t++) {
-        if (it_t->cooldown_timer <= 0.f) {
+        if (it_t->getReloadTimer() <= 0.f) {
             // launch shell
             for (auto it_e = level->spawned_enemies.begin(); it_e != level->spawned_enemies.end(); it_e++) {
-                if (glm::length(it_t->coordinate - it_e->getCoordinate()) <= it_t->tower->radius) {
+                if (glm::length(it_t->getCoordinate() - it_e->getCoordinate()) <= it_t->getTower()->getPropsT().getAttackRadius()) {
                     it_e->incHauntShells();
-                    it_t->cooldown_timer = it_t->tower->cooldown_time;
+
+                    it_t->Unload();
+                    it_t->incNumShells();
                     launchShell(&(*it_t), &(*it_e));
+                    break;
                 }
             }
         } else
-            it_t->cooldown_timer -= dt;
+            it_t->difReloadTimer(-dt);
     }
 }
 
 void BattleManager::launchShell(const TowerEntity* tower, const EnemyEntity* enemy)
 {
-    std::cout << "Shell launched from (" << tower->coordinate.x << ", " << tower->coordinate.y
-              << ") to (" << enemy->getCoordinate().x << ", " << enemy->getCoordinate().y << ")\n";
+    // std::cout << "Shell launched from (" << tower->getCoordinate().x << ", " << tower->getCoordinate().y
+            //   << ") to (" << enemy->getCoordinate().x << ", " << enemy->getCoordinate().y << ")\n";
 }
 
 void BattleManager::damageTown(unsigned int dmg)
 {
-    std::cout << "damageTown: -" << dmg << "\n";
+    // std::cout << "damageTown: -" << dmg << "\n";
 }
 
 void BattleManager::createEnemyEntity(const Enemy* enemy)

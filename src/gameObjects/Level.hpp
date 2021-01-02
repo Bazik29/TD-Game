@@ -5,6 +5,7 @@
 #include "EnemyWay.hpp"
 #include "TowerEntity.hpp"
 #include "BattleGridEntity.hpp"
+#include "ShellEntity.hpp"
 
 #include <list>
 #include <vector>
@@ -24,4 +25,5 @@ struct Level {
     BattleGridEntity battle_grid_entity;
     std::vector<TowerEntity> built_towers;
     std::list<EnemyEntity> spawned_enemies;
+    std::list<ShellEntity> shells;
 };

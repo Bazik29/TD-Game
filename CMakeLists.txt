@@ -40,10 +40,10 @@ FetchContent_Declare(
 	GIT_TAG v3.9.1
 )
 
-# set(GLFW_BUILD_EXAMPLES OFF)
-# set(GLFW_BUILD_TESTS OFF)
-# set(GLFW_BUILD_DOCS OFF)
-# set(GLFW_INSTALL OFF)
+set(GLFW_BUILD_EXAMPLES OFF)
+set(GLFW_BUILD_TESTS OFF)
+set(GLFW_BUILD_DOCS OFF)
+set(GLFW_INSTALL OFF)
 
 FetchContent_GetProperties(glfw)
 if(NOT glfw_POPULATED)
@@ -74,52 +74,56 @@ target_include_directories(utils INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src/utils
 
 # GAME_SRC
 set(GAME_SRC_HPP
-	# src/gameObjects/BattleGrid.hpp
+	src/gameObjects/BattleGridEntity.hpp
+	src/gameObjects/Enemy.hpp
 	src/gameObjects/EnemyEntity.hpp
-
 	src/gameObjects/EnemyQueue.hpp
 	src/gameObjects/EnemyWay.hpp
-	src/gameObjects/MeshGL.hpp
+	src/gameObjects/Level.hpp
+	src/gameObjects/ShellEntity.hpp
+	src/gameObjects/Tower.hpp
 	src/gameObjects/TowerEntity.hpp
-	src/gameObjects/BattleGridEntity.hpp
+
+	src/logicObjects/EnemyProperty.hpp
+	src/logicObjects/ShellProperty.hpp
+	src/logicObjects/TowerProperty.hpp
 
 	src/managers/BattleManager.hpp
 	src/managers/ResourceManager.hpp
+	src/managers/GameManager.hpp
 
+	src/renderObjects/BattleGridMeshGl.hpp
+	src/renderObjects/ElementsMeshGl.hpp
+	src/renderObjects/MeshGl.hpp
+	
 	src/GLSLProgram.hpp
 	src/Input.hpp
 	src/Renderer.hpp
 	src/WindowGLFW.hpp
-
-
-	src/logicObjects/EnemyProperty.cpp
-	src/logicObjects/EnemyProperty.hpp
-
-	src/gameObjects/Enemy.hpp
-	src/gameObjects/Enemy.cpp
-
-	src/gameObjects/EnemyEntity.hpp
-	src/gameObjects/EnemyEntity.cpp
-
-	src/renderObjects/MeshGl.hpp
-	src/renderObjects/BattleGridMeshGl.hpp
-	src/renderObjects/ElementsMeshGl.hpp
 )
 
 set(GAME_SRC_CPP
-	# src/gameObjects/BattleGrid.cpp
+	src/gameObjects/BattleGridEntity.cpp
+	src/gameObjects/Enemy.cpp
+	src/gameObjects/EnemyEntity.cpp
 	src/gameObjects/EnemyQueue.cpp
 	src/gameObjects/EnemyWay.cpp
-	src/gameObjects/MeshGL.cpp
-	src/gameObjects/BattleGridEntity.cpp
-	src/gameObjects/EnemyEntity.cpp
+	src/gameObjects/ShellEntity.cpp
+	src/gameObjects/Tower.cpp
+	src/gameObjects/TowerEntity.cpp
+
+	src/logicObjects/EnemyProperty.cpp
+	src/logicObjects/ShellProperty.cpp
+	src/logicObjects/TowerProperty.cpp
 
 	src/managers/BattleManager.cpp
 	src/managers/ResourceManager.cpp
+	src/managers/GameManager.cpp
 
-	src/renderObjects/MeshGl.cpp
+
 	src/renderObjects/BattleGridMeshGl.cpp
 	src/renderObjects/ElementsMeshGl.cpp
+	src/renderObjects/MeshGl.cpp
 
 	src/GLSLProgram.cpp
 	src/Input.cpp
@@ -135,7 +139,11 @@ add_library(game_src STATIC ${GAME_SRC_HPP} ${GAME_SRC_CPP})
 target_include_directories(game_src PUBLIC ${GAME_SRC_INC})
 target_link_libraries(game_src utils gl_core glm::glm glfw nlohmann_json::nlohmann_json)
 
-
-add_executable(${PROJECT_NAME} src/target/main.cpp)
+add_executable(${PROJECT_NAME} ${TARGER_SRC} src/target/main.cpp)
 target_link_libraries(${PROJECT_NAME} game_src)
 target_compile_options(${PROJECT_NAME} PRIVATE ${COMPILE_FLAGS})
+
+add_executable(test src/target/test.cpp)
+target_include_directories(test PUBLIC ${GAME_SRC_INC})
+target_link_libraries(test game_src)
+

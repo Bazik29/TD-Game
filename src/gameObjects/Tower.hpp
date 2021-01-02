@@ -1,21 +1,52 @@
 #pragma once
 
-#include <glm/vec4.hpp>
+#include "../logicObjects/TowerProperty.hpp"
+#include "../renderObjects/ElementsMeshGl.hpp"
 
-#include "MeshGL.hpp"
+class Tower {
+public:
+    Tower();
+    Tower(const TowerProperty& property_t, const ElementsMeshGl* mesh_t,
+        const ShellProperty& property_s, const ElementsMeshGl* mesh_s);
+    ~Tower();
+    Tower(const Tower& other) = default;
+    Tower(Tower&& other) = default;
+    Tower& operator=(const Tower& other) = default;
+    Tower& operator=(Tower&& other) = default;
 
-struct Shell {
-    float speed;
-    MeshGL* meshGL;
-    glm::vec4 color;
+    void init(const TowerProperty& property_t, const ElementsMeshGl* mesh_t,
+        const ShellProperty& property_s, const ElementsMeshGl* mesh_s);
+
+    inline const TowerProperty& getPropsT() const;
+    inline const ElementsMeshGl* getMeshT() const;
+
+    inline const ShellProperty& getPropsS() const;
+    inline const ElementsMeshGl* getMeshS() const;
+
+private:
+    TowerProperty property_t;
+    const ElementsMeshGl* mesh_t;
+
+    ShellProperty property_s;
+    const ElementsMeshGl* mesh_s;
 };
 
-struct Tower {
-    float radius;
-    unsigned int damage;
-    float cooldown_time;
-    MeshGL* meshGL;
-    glm::vec4 color;
+inline const TowerProperty& Tower::getPropsT() const
+{
+    return property_t;
+}
 
-    Shell shell;
-};
+inline const ElementsMeshGl* Tower::getMeshT() const
+{
+    return mesh_t;
+}
+
+inline const ShellProperty& Tower::getPropsS() const
+{
+    return property_s;
+}
+
+inline const ElementsMeshGl* Tower::getMeshS() const
+{
+    return mesh_s;
+}

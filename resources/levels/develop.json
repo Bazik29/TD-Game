@@ -18,17 +18,17 @@
     "enemy_spawn_queue": [
         {
             "enemy_id": 1,
-            "number": 5,
+            "number": 1,
             "spawn_delay": 1
         },
         {
             "enemy_id": 2,
-            "number": 3,
+            "number": 1,
             "spawn_delay": 0.5
         }
     ],
     "battle_field": {
-        "scale": 2,
+        "scale": 1,
         "w": 12,
         "h": 10,
         "enemy_way": [

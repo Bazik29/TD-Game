@@ -99,7 +99,7 @@ void ResourceManager::loadEnemy(int id, std::string path_to_json)
     auto damage = j["damage"].get<unsigned int>();
     auto color = j["color"].get<glm::vec4>();
     auto mesh_path = j["model"]["mesh_path"].get<std::string>();
-    const ElementsMeshGl* mesh = loadMeshGl(mesh_path);
+    const ElementsMeshGl* mesh = loadElementsMeshGl(mesh_path);
 
     loaded_enemies[id] = Enemy(EnemyProperty(hp, speed, damage, color), mesh);
 }
@@ -127,18 +127,20 @@ void ResourceManager::loadTower(int id, std::string path_to_json)
     json j;
     json_file >> j;
 
-    this->loaded_towers[id].radius = j["radius"].get<float>();
-    this->loaded_towers[id].damage = j["damage"].get<unsigned int>();
-    this->loaded_towers[id].cooldown_time = j["cooldown_time"].get<float>();
+    auto attack_radius = j["attack_radius"].get<float>();
+    auto damage = j["damage"].get<unsigned int>();
+    auto reload_time = j["reload_time"].get<float>();
+    auto color_t = j["color"].get<glm::vec4>();
+    auto speed = j["shell"]["speed"].get<float>();
+    auto color_s = j["shell"]["color"].get<glm::vec4>();
 
-    this->loaded_towers[id].color = j["model"]["color"].get<glm::vec4>();
     auto mesh_tower = j["model"]["mesh_path"].get<std::string>();
-    this->loaded_towers[id].meshGL = loadMeshGL(mesh_tower);
-
-    this->loaded_towers[id].shell.speed = j["shell"]["speed"].get<float>();
-    this->loaded_towers[id].shell.color = j["shell"]["model"]["color"].get<glm::vec4>();
     auto mesh_shell = j["shell"]["model"]["mesh_path"].get<std::string>();
-    this->loaded_towers[id].shell.meshGL = loadMeshGL(mesh_shell);
+
+    const ElementsMeshGl* mesh_t = loadElementsMeshGl(mesh_tower);
+    const ElementsMeshGl* mesh_s = loadElementsMeshGl(mesh_shell);
+
+    this->loaded_towers[id] = Tower(TowerProperty(attack_radius, damage, reload_time, color_t), mesh_t, ShellProperty(speed, color_s), mesh_s);
 }
 
 Tower* ResourceManager::getTower(int id)
@@ -150,7 +152,7 @@ Tower* ResourceManager::getTower(int id)
     };
 }
 
-const ElementsMeshGl* ResourceManager::loadMeshGl(std::string path_to_json)
+const ElementsMeshGl* ResourceManager::loadElementsMeshGl(std::string path_to_json)
 {
     auto it = this->loaded_meshesGl.find(path_to_json);
     if (it != this->loaded_meshesGl.end())
@@ -170,50 +172,4 @@ const ElementsMeshGl* ResourceManager::loadMeshGl(std::string path_to_json)
 
     this->loaded_meshesGl[path_to_json].create(PrimitiveType::TRIANGLES, vertices, indices);
     return &this->loaded_meshesGl[path_to_json];
-}
-
-MeshGL* ResourceManager::loadMeshGL(std::string path_to_json)
-{
-    auto it = this->loaded_meshesGL.find(path_to_json);
-    if (it != this->loaded_meshesGL.end())
-        return &it->second;
-
-    std::ifstream json_file(path_to_json);
-    if (!json_file) {
-        throw std::runtime_error(
-            "Can't open the file: '" + path_to_json + "'");
-    }
-
-    json j;
-    json_file >> j;
-
-    auto vertices = j["vertices"].get<std::vector<glm::vec2>>();
-    auto indices = j["indices"].get<std::vector<unsigned int>>();
-
-    GLuint VAO, VBO, EBO;
-    makeMeshGL(VAO, VBO, EBO, vertices, indices);
-
-    this->loaded_meshesGL[path_to_json].init(VAO, VBO, EBO, indices.size());
-    return &this->loaded_meshesGL[path_to_json];
-}
-
-void ResourceManager::makeMeshGL(GLuint& VAO, GLuint& VBO, GLuint& EBO, std::vector<glm::vec2>& vertices, std::vector<unsigned int>& indices)
-{
-    gl::GenVertexArrays(1, &VAO);
-    gl::GenBuffers(1, &VBO);
-    gl::GenBuffers(1, &EBO);
-
-    gl::BindVertexArray(VAO);
-
-    gl::BindBuffer(gl::ARRAY_BUFFER, VBO);
-    gl::BufferData(gl::ARRAY_BUFFER, vertices.size() * sizeof(glm::vec2), &vertices[0], gl::STATIC_DRAW);
-
-    gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, EBO);
-    gl::BufferData(gl::ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], gl::STATIC_DRAW);
-
-    // vertex positions
-    gl::EnableVertexAttribArray(0);
-    gl::VertexAttribPointer(0, 2, gl::FLOAT, gl::FALSE_, sizeof(glm::vec2), (void*)0);
-
-    gl::BindVertexArray(0);
 }
