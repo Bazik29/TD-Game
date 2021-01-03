@@ -122,6 +122,17 @@ bool BattleGridEntity::coordToWorld(const glm::uvec2& pos, glm::vec2& coords)
     return false;
 }
 
+bool BattleGridEntity::coordOnBattleGrid(const glm::vec2& coords, glm::uvec2& bg_pos, glm::vec2& coords_for_tower)
+{
+    glm::uvec2 pos = glm::trunc(coords / scale);
+    if (touchCell(pos)) {
+        bg_pos = pos;
+        coords_for_tower = glm::vec2(pos + glm::uvec2(1, 1)) * scale - 0.5f * scale;
+        return true;
+    }
+    return false;
+}
+
 bool BattleGridEntity::checkForTowerWorldCoord(const glm::vec2& coords)
 {
     glm::uvec2 pos = glm::trunc(coords / scale);

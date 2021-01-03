@@ -37,6 +37,7 @@ public:
 
     bool coordToBattleGrid(const glm::vec2& coords, glm::uvec2& pos);
     bool coordToWorld(const glm::uvec2& pos, glm::vec2& coords);
+    bool coordOnBattleGrid(const glm::vec2& coords, glm::uvec2& bg_pos, glm::vec2& coords_for_tower);
     bool checkForTowerWorldCoord(const glm::vec2& coords);
     bool buildTower(const glm::uvec2& pos, const TowerEntity* tower);
     bool buildTowerWorldCoord(const glm::vec2& coords, const TowerEntity* tower);

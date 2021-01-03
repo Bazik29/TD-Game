@@ -29,6 +29,8 @@ private:
     float ENEMY_WAY_BOX = 0.01f;
 
     TowerEntity* tower_for_build = nullptr;
+    bool tower_can_build = false;
+    glm::vec2 tower_build_coors;
 
     glm::vec2 cursor;
     glm::uvec2 cursor_grid;

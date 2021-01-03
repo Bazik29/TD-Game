@@ -30,13 +30,14 @@ void BattleManager::setLevel(Level* level)
 void BattleManager::update(const float& dt, const glm::vec2& cursor)
 {
     this->cursor = cursor;
+    cursor_on_field = level->battle_grid_entity.coordOnBattleGrid(cursor, cursor_grid, tower_build_coors);
 
     if (tower_for_build) {
-        this->cursor_on_field = level->battle_grid_entity.coordToBattleGrid(cursor, cursor_grid);
-        glm::vec2 cw(-100, -100);
         if (cursor_on_field)
-            level->battle_grid_entity.coordToWorld(cursor_grid, cw);
-        tower_for_build->setCoordinate(cw);
+            tower_for_build->setCoordinate(tower_build_coors);
+        else
+            // hide
+            tower_for_build->setCoordinate(glm::vec2(-100, -100));
     }
 
     spawnEnemyFromQueue(dt);
