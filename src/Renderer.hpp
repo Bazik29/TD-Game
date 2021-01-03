@@ -17,7 +17,7 @@ public:
     inline void setProjectionMatrix(const glm::mat4 projection);
 
     void draw(const Level* level);
-    void drawProject(const TowerEntity* tower);
+    void drawTowerForBuilding(const TowerEntity* tower);
 
 private:
     GLSLProgram shader;
@@ -27,6 +27,7 @@ private:
     glm::mat4 projection;
     glm::mat4 pv_matrix;
 
+    void draw(const std::list<ShellEntity>& shells);
     void draw(const std::list<EnemyEntity>& enemies);
     void draw(const std::vector<TowerEntity>& towers);
     void draw(const BattleGridEntity& grid);

@@ -41,6 +41,7 @@ void BattleManager::update(const float& dt, const glm::vec2& cursor)
     }
 
     spawnEnemyFromQueue(dt);
+    updateShells(dt);
     updateEnemies(dt);
     towersAttack(dt);
 }
@@ -53,13 +54,15 @@ void BattleManager::selectedTowerForBuild(const Tower* tower)
 
 bool BattleManager::tryBuildSelectedTower()
 {
-    bool check = level->battle_grid_entity.checkForTowerWorldCoord(cursor);
-    if (check) {
-        level->built_towers.push_back(std::move(*tower_for_build));
-        delete tower_for_build;
-        tower_for_build = nullptr;
+    if (tower_for_build) {
+        bool check = level->battle_grid_entity.checkForTowerWorldCoord(cursor);
+        if (check) {
+            level->built_towers.push_back(std::move(*tower_for_build));
+            delete tower_for_build;
+            tower_for_build = nullptr;
 
-        return level->battle_grid_entity.buildTowerWorldCoord(cursor, &level->built_towers.back());
+            return level->battle_grid_entity.buildTowerWorldCoord(cursor, &level->built_towers.back());
+        }
     }
     return false;
 }
@@ -95,6 +98,7 @@ void BattleManager::updateEnemies(const float& dt)
                 continue;
             } else {
                 // wait while haunt_shells != 0
+                it++;
                 continue;
             }
         }
@@ -110,12 +114,11 @@ void BattleManager::updateEnemies(const float& dt)
 
             glm::vec2 dway = dir_n * it->getEnemy()->getProps().getSpeed() * dt;
             float way = glm::length(dway);
-            if (way >= dist - ENEMY_WAY_BOX && way <= dist + ENEMY_WAY_BOX) {
-                it->incWayPoint();
-            }
             if (way > dist + ENEMY_WAY_BOX) {
                 it->incWayPoint();
                 dway = dir;
+            } else if (way >= dist - ENEMY_WAY_BOX && way <= dist + ENEMY_WAY_BOX) {
+                it->incWayPoint();
             }
 
             it->move(dway);
@@ -137,10 +140,6 @@ void BattleManager::towersAttack(const float& dt)
             // launch shell
             for (auto it_e = level->spawned_enemies.begin(); it_e != level->spawned_enemies.end(); it_e++) {
                 if (glm::length(it_t->getCoordinate() - it_e->getCoordinate()) <= it_t->getTower()->getPropsT().getAttackRadius()) {
-                    it_e->incHauntShells();
-
-                    it_t->Unload();
-                    it_t->incNumShells();
                     launchShell(&(*it_t), &(*it_e));
                     break;
                 }
@@ -150,10 +149,46 @@ void BattleManager::towersAttack(const float& dt)
     }
 }
 
-void BattleManager::launchShell(const TowerEntity* tower, const EnemyEntity* enemy)
+void BattleManager::launchShell(TowerEntity* const tower, EnemyEntity* const enemy)
 {
-    // std::cout << "Shell launched from (" << tower->getCoordinate().x << ", " << tower->getCoordinate().y
-    //   << ") to (" << enemy->getCoordinate().x << ", " << enemy->getCoordinate().y << ")\n";
+    if (enemy->getHP() > 0) {
+        tower->Unload();
+        tower->incNumShells();
+        enemy->incHauntShells();
+        level->shells.push_back(ShellEntity(tower, enemy));
+    }
+}
+
+void BattleManager::updateShells(const float& dt)
+{
+    auto it = level->shells.begin();
+    while (it != level->shells.end()) {
+
+        glm::vec2 dir = it->getEnemyE()->getCoordinate() - it->getCoordinate();
+        float dist = glm::length(dir);
+
+        glm::vec2 dir_n(0.f);
+        if (dir.x != 0 || dir.y != 0)
+            dir_n = glm::normalize(dir);
+
+        glm::vec2 dway = dir_n * it->getProps().getSpeed() * dt;
+        float way = glm::length(dway);
+        if (way > dist + ENEMY_HIT_BOX) {
+            dway = dir;
+            it->getEnemyE()->redHauttSheels();
+            it->getEnemyE()->difHP(-it->getTowerE()->getTower()->getPropsT().getDamage());
+            it = deleteShellt(it);
+            continue;
+        }
+
+        it->move(dway);
+        it++;
+    }
+}
+
+std::list<ShellEntity>::iterator BattleManager::deleteShellt(std::list<ShellEntity>::iterator it)
+{
+    return level->shells.erase(it);
 }
 
 void BattleManager::damageTown(unsigned int dmg)

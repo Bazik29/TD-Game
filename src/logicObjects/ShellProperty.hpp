@@ -24,6 +24,16 @@ private:
     glm::vec4 color;
 };
 
+inline float ShellProperty::getSpeed() const
+{
+    return speed;
+}
+
+inline void ShellProperty::setSpeed(float speed)
+{
+    this->speed = speed;
+}
+
 inline glm::vec4 ShellProperty::getColor() const
 {
     return color;

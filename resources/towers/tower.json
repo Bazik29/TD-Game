@@ -1,7 +1,7 @@
 {
   "attack_radius": 10,
   "damage": 5,
-  "reload_time": 0.5,
+  "reload_time": 0.8,
   "color": {
     "x": 1,
     "y": 1,

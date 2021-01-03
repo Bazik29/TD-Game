@@ -1,6 +1,6 @@
 {
 	"hp": 10,
-	"speed": 5,
+	"speed": 2,
 	"damage": 3,
 	"color": {
 		"x": 1,

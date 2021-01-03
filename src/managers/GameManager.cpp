@@ -83,6 +83,7 @@ void GameManager::run()
             float currentTime = glfwGetTime();
             dt = currentTime - last_time;
             last_time = currentTime;
+            time_run += dt;
 
             _input->update();
             _window->pollEvents();
@@ -119,7 +120,9 @@ void GameManager::run()
             gl::Clear(gl::COLOR_BUFFER_BIT);
 
             _render->draw(_battle_mng->getLevel());
-            _render->drawProject(_battle_mng->getProject());
+            auto project_tower = _battle_mng->getTowerForBuilding();
+            if (project_tower)
+                _render->drawTowerForBuilding(project_tower);
 
             _window->display();
         }

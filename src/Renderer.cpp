@@ -43,7 +43,32 @@ void Renderer::draw(const Level* level)
 {
     draw(level->battle_grid_entity);
     draw(level->spawned_enemies);
+    
     draw(level->built_towers);
+    draw(level->shells);
+}
+
+void Renderer::draw(const std::list<ShellEntity>& shells) 
+{
+        for (auto& shell : shells) {
+        auto coord = shell.getCoordinate();
+        auto vao = shell.getMesh()->getVAO();
+        auto size = shell.getMesh()->getSize();
+        auto color = shell.getProps().getColor();
+
+        glm::mat4 PVM = pv_matrix * glm::translate(glm::mat4(1.0f), glm::vec3(coord, 0.0f));
+
+        shader.start();
+        shader.setUniform("color", color);
+        shader.setUniform("PVM", PVM);
+
+        gl::BindVertexArray(vao);
+        gl::EnableVertexAttribArray(0);
+        gl::DrawElements(gl::TRIANGLES, size, gl::UNSIGNED_INT, 0);
+        gl::BindVertexArray(0);
+
+        shader.stop();
+    }
 }
 
 void Renderer::draw(const std::list<EnemyEntity>& enemies)
@@ -107,10 +132,8 @@ void Renderer::draw(const BattleGridEntity& grid)
     shader_grid.stop();
 }
 
-void Renderer::drawProject(const TowerEntity* tower)
+void Renderer::drawTowerForBuilding(const TowerEntity* tower)
 {
-    if (!tower)
-        return;
     auto coord = tower->getCoordinate();
     auto vao = tower->getTower()->getMeshT()->getVAO();
     auto size = tower->getTower()->getMeshT()->getSize();

@@ -12,7 +12,7 @@ public:
     ~BattleManager();
 
     inline const Level* getLevel() const;
-    inline const TowerEntity* getProject() const;
+    inline const TowerEntity* getTowerForBuilding() const;
 
     void setLevel(Level* level);
     void update(const float& dt, const glm::vec2& cursor);
@@ -27,6 +27,7 @@ private:
     Level* level;
 
     float ENEMY_WAY_BOX = 0.01f;
+    float ENEMY_HIT_BOX = 0.01f;
 
     TowerEntity* tower_for_build = nullptr;
     bool tower_can_build = false;
@@ -46,7 +47,9 @@ private:
     void updateEnemies(const float& dt);
     void towersAttack(const float& dt);
 
-    void launchShell(const TowerEntity* tower, const EnemyEntity* enemy);
+    void launchShell(TowerEntity* const tower, EnemyEntity* const enemy);
+    void updateShells(const float& dt);
+    std::list<ShellEntity>::iterator deleteShellt(std::list<ShellEntity>::iterator it);
 
     void damageTown(unsigned int dmg);
 
@@ -59,7 +62,7 @@ inline const Level* BattleManager::getLevel() const
     return level;
 }
 
-inline const TowerEntity* BattleManager::getProject() const
+inline const TowerEntity* BattleManager::getTowerForBuilding() const
 {
     return tower_for_build;
 }
