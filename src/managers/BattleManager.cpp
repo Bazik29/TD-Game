@@ -7,7 +7,6 @@
 BattleManager::BattleManager()
 {
     this->level = nullptr;
-    is_run = false;
     enemy_spawn_timer = 0;
     enemy_spawn_point = glm::vec2(0.f);
     enemy_kill_point = glm::vec2(0.f);
@@ -22,34 +21,52 @@ void BattleManager::setLevel(Level* level)
     if (!level->is_init)
         throw std::runtime_error("BattleManager: Level not init.");
     this->level = level;
-    is_run = false;
+
     enemy_spawn_timer = 0;
     enemy_spawn_point = level->enemy_way.firstPoint();
     enemy_kill_point = level->enemy_way.lastPoint();
 }
 
-void BattleManager::update(const float& dt, const glm::vec2 cursor)
+void BattleManager::update(const float& dt, const glm::vec2& cursor)
 {
     this->cursor = cursor;
 
-    if (tower_project)
-        tower_project->setCoordinate(cursor);
-    if (this->is_run) {
-        spawnEnemyFromQueue(dt);
-        updateEnemies(dt);
-        towersAttack(dt);
+    if (tower_for_build) {
+        this->cursor_on_field = level->battle_grid_entity.coordToBattleGrid(cursor, cursor_grid);
+        glm::vec2 cw(-100, -100);
+        if (cursor_on_field)
+            level->battle_grid_entity.coordToWorld(cursor_grid, cw);
+        tower_for_build->setCoordinate(cw);
     }
+
+    spawnEnemyFromQueue(dt);
+    updateEnemies(dt);
+    towersAttack(dt);
 }
 
-void BattleManager::buildTower(const Tower* tower, glm::vec2 coord)
+void BattleManager::selectedTowerForBuild(const Tower* tower)
 {
-    level->built_towers.push_back(TowerEntity(tower, coord));
-    // hover cell color
+    if (!tower_for_build)
+        tower_for_build = new TowerEntity(tower, cursor);
 }
 
-void BattleManager::setProjectTower(const Tower* tower)
+bool BattleManager::tryBuildSelectedTower()
 {
-    tower_project = new TowerEntity(tower, cursor);
+    bool check = level->battle_grid_entity.checkForTowerWorldCoord(cursor);
+    if (check) {
+        level->built_towers.push_back(std::move(*tower_for_build));
+        delete tower_for_build;
+        tower_for_build = nullptr;
+
+        return level->battle_grid_entity.buildTowerWorldCoord(cursor, &level->built_towers.back());
+    }
+    return false;
+}
+
+void BattleManager::discardTowerForBuild()
+{
+    delete tower_for_build;
+    tower_for_build = nullptr;
 }
 
 void BattleManager::spawnEnemyFromQueue(const float& dt)
@@ -135,7 +152,7 @@ void BattleManager::towersAttack(const float& dt)
 void BattleManager::launchShell(const TowerEntity* tower, const EnemyEntity* enemy)
 {
     // std::cout << "Shell launched from (" << tower->getCoordinate().x << ", " << tower->getCoordinate().y
-            //   << ") to (" << enemy->getCoordinate().x << ", " << enemy->getCoordinate().y << ")\n";
+    //   << ") to (" << enemy->getCoordinate().x << ", " << enemy->getCoordinate().y << ")\n";
 }
 
 void BattleManager::damageTown(unsigned int dmg)

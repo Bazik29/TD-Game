@@ -35,6 +35,12 @@ public:
 
     inline const BattleGridMeshGl& mesh() const;
 
+    bool coordToBattleGrid(const glm::vec2& coords, glm::uvec2& pos);
+    bool coordToWorld(const glm::uvec2& pos, glm::vec2& coords);
+    bool checkForTowerWorldCoord(const glm::vec2& coords);
+    bool buildTower(const glm::uvec2& pos, const TowerEntity* tower);
+    bool buildTowerWorldCoord(const glm::vec2& coords, const TowerEntity* tower);
+
 private:
     BattleGridMeshGl _mesh;
 
@@ -45,7 +51,8 @@ private:
     BattleGridEntity::Cell* grid;
 
     void makeRoad(glm::uvec2 A, glm::uvec2 B);
-    void touchCell(const glm::uvec2& pos);
+    void touchCellExcept(const glm::uvec2& pos);
+    bool touchCell(const glm::uvec2& pos);
     void updateColorsMesh();
 };
 

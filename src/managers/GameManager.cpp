@@ -62,7 +62,6 @@ void GameManager::init()
         _resource_mng->loadLevel(levels[0], _level);
 
         _battle_mng->setLevel(&_level);
-        _battle_mng->run();
 
         gl::ClearColor(0.2, 0.2, 0.2, 1);
 
@@ -96,7 +95,23 @@ void GameManager::run()
 
             if (_input->isKeyDown(Input::Keyboard::ESCAPE)) {
                 _window->close();
-                continue;
+                break;
+            }
+
+            if (_input->isKeyDown(Input::Keyboard::Q)) {
+                _battle_mng->selectedTowerForBuild(&_resource_mng->loaded_towers[0]);
+            }
+
+            if (_input->isKeyDown(Input::Keyboard::W)) {
+                _battle_mng->discardTowerForBuild();
+            }
+            if (_input->isKeyDown(Input::Keyboard::E)) {
+                bool res = _battle_mng->tryBuildSelectedTower();
+
+                if (res)
+                    std::cout << "The tower was built\n";
+                else
+                    std::cout << "You can't build here!\n";
             }
 
             _battle_mng->update(dt, mouse_world);

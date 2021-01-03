@@ -1,6 +1,7 @@
 #include "BattleGridEntity.hpp"
 
 #include <exception>
+#include <glm/glm.hpp>
 
 void BattleGridEntity::makeRoad(glm::uvec2 A, glm::uvec2 B)
 {
@@ -27,7 +28,7 @@ void BattleGridEntity::makeRoad(glm::uvec2 A, glm::uvec2 B)
 }
 
 BattleGridEntity::BattleGridEntity()
-    :_mesh()
+    : _mesh()
 {
 }
 
@@ -81,13 +82,13 @@ void BattleGridEntity::setDefaultColorMap()
 
 const BattleGridEntity::Cell& BattleGridEntity::getCell(glm::uvec2 pos)
 {
-    touchCell(pos);
+    touchCellExcept(pos);
     return this->grid[pos.y * this->widht + pos.x];
 }
 
 void BattleGridEntity::mkTower(glm::uvec2 pos, const TowerEntity* tower)
 {
-    touchCell(pos);
+    touchCellExcept(pos);
     this->grid[pos.y * this->widht + pos.x].type = BattleGridEntity::Cell::Type::TOWER;
     this->grid[pos.y * this->widht + pos.x].tower_ptr = tower;
     updateColorsMesh();
@@ -95,17 +96,77 @@ void BattleGridEntity::mkTower(glm::uvec2 pos, const TowerEntity* tower)
 
 void BattleGridEntity::rmTower(glm::uvec2 pos)
 {
-    touchCell(pos);
+    touchCellExcept(pos);
     this->grid[pos.y * this->widht + pos.x].type = BattleGridEntity::Cell::Type::EMPTY;
     this->grid[pos.y * this->widht + pos.x].tower_ptr = nullptr;
     updateColorsMesh();
 }
 
-void BattleGridEntity::touchCell(const glm::uvec2& pos)
+bool BattleGridEntity::coordToBattleGrid(const glm::vec2& coords, glm::uvec2& pos)
 {
-    if (pos.x >= widht || pos.y >= height) {
-        throw std::out_of_range("out_of_range BattleGridEntity");
+    glm::uvec2 c = glm::trunc(coords / scale);
+
+    if (touchCell(c)) {
+        pos = c;
+        return true;
     }
+    return false;
+}
+
+bool BattleGridEntity::coordToWorld(const glm::uvec2& pos, glm::vec2& coords)
+{
+    if (touchCell(pos)) {
+        coords = glm::vec2(pos + glm::uvec2(1, 1)) * scale - 0.5f * scale;
+        return true;
+    }
+    return false;
+}
+
+bool BattleGridEntity::checkForTowerWorldCoord(const glm::vec2& coords)
+{
+    glm::uvec2 pos = glm::trunc(coords / scale);
+    if (touchCell(pos))
+        if (grid[pos.y * widht + pos.x].type == BattleGridEntity::Cell::Type::EMPTY)
+            return true;
+    return false;
+}
+
+bool BattleGridEntity::buildTower(const glm::uvec2& pos, const TowerEntity* tower)
+{
+    if (touchCell(pos))
+        if (grid[pos.y * widht + pos.x].type == BattleGridEntity::Cell::Type::EMPTY) {
+            glm::vec2 coords = glm::vec2(pos + glm::uvec2(1, 1)) * scale - 0.5f * scale;
+            grid[pos.y * widht + pos.x].type = BattleGridEntity::Cell::Type::TOWER;
+            grid[pos.y * widht + pos.x].tower_ptr = tower;
+
+            return true;
+        }
+    return false;
+}
+
+bool BattleGridEntity::buildTowerWorldCoord(const glm::vec2& coords, const TowerEntity* tower)
+{
+    glm::uvec2 pos = glm::trunc(coords / scale);
+    if (touchCell(pos))
+        if (grid[pos.y * widht + pos.x].type == BattleGridEntity::Cell::Type::EMPTY) {
+            glm::vec2 coords = glm::vec2(pos + glm::uvec2(1, 1)) * scale - 0.5f * scale;
+            grid[pos.y * widht + pos.x].type = BattleGridEntity::Cell::Type::TOWER;
+            grid[pos.y * widht + pos.x].tower_ptr = tower;
+
+            return true;
+        }
+    return false;
+}
+
+void BattleGridEntity::touchCellExcept(const glm::uvec2& pos)
+{
+    if (pos.x >= widht || pos.y >= height)
+        throw std::out_of_range("out_of_range BattleGridEntity");
+}
+
+bool BattleGridEntity::touchCell(const glm::uvec2& pos)
+{
+    return !(pos.x >= widht || pos.y >= height);
 }
 
 void BattleGridEntity::updateColorsMesh()

@@ -11,30 +11,28 @@ public:
     BattleManager();
     ~BattleManager();
 
-    inline void run();
-    inline void stop();
-    inline bool isRun();
-
     inline const Level* getLevel() const;
     inline const TowerEntity* getProject() const;
 
     void setLevel(Level* level);
-    void update(const float& dt, const glm::vec2 cursor);
+    void update(const float& dt, const glm::vec2& cursor);
 
-    void buildTower(const Tower* tower, glm::vec2 coord);
+    void selectedTowerForBuild(const Tower* tower);
+    bool tryBuildSelectedTower();
+    void discardTowerForBuild();
 
     void setProjectTower(const Tower* tower);
 
 private:
     Level* level;
-    bool is_run;
 
     float ENEMY_WAY_BOX = 0.01f;
 
-    TowerEntity* tower_project = nullptr;
+    TowerEntity* tower_for_build = nullptr;
 
     glm::vec2 cursor;
     glm::uvec2 cursor_grid;
+    bool cursor_on_field;
 
     // auxiliary variables
     float enemy_spawn_timer;
@@ -54,21 +52,6 @@ private:
     std::list<EnemyEntity>::iterator deleteEnemy(std::list<EnemyEntity>::iterator it);
 };
 
-inline void BattleManager::run()
-{
-    this->is_run = true;
-}
-
-inline void BattleManager::stop()
-{
-    this->is_run = false;
-}
-
-inline bool BattleManager::isRun()
-{
-    return this->is_run;
-}
-
 inline const Level* BattleManager::getLevel() const
 {
     return level;
@@ -76,5 +59,5 @@ inline const Level* BattleManager::getLevel() const
 
 inline const TowerEntity* BattleManager::getProject() const
 {
-    return tower_project;
+    return tower_for_build;
 }
