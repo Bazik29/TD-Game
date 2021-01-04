@@ -10,10 +10,10 @@ public:
     TowerEntity(const Tower* Tower);
     TowerEntity(const Tower* Tower, const glm::vec2& coord);
     ~TowerEntity();
-    TowerEntity(const TowerEntity& other) = default;
-    TowerEntity(TowerEntity&& other) = default;
-    TowerEntity& operator=(const TowerEntity& other) = default;
-    TowerEntity& operator=(TowerEntity&& other) = default;
+    TowerEntity(const TowerEntity& other);
+    TowerEntity(TowerEntity&& other);
+    TowerEntity& operator=(const TowerEntity& other);
+    TowerEntity& operator=(TowerEntity&& other);
 
     void init(const Tower* Tower);
     void init(const Tower* Tower, const glm::vec2& coord);

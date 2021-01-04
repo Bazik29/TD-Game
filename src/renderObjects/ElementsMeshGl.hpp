@@ -8,10 +8,10 @@ class ElementsMeshGl : public MeshGl {
 public:
     ElementsMeshGl();
     ~ElementsMeshGl();
-    ElementsMeshGl(const ElementsMeshGl& other) = default;
-    ElementsMeshGl(ElementsMeshGl&& other) = default;
-    ElementsMeshGl& operator=(const ElementsMeshGl& other) = default;
-    ElementsMeshGl& operator=(ElementsMeshGl&& other) = default;
+    ElementsMeshGl(const ElementsMeshGl& other);
+    ElementsMeshGl(ElementsMeshGl&& other);
+    ElementsMeshGl& operator=(const ElementsMeshGl& other);
+    ElementsMeshGl& operator=(ElementsMeshGl&& other);
 
     void create(
         PrimitiveType type,

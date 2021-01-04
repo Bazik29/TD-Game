@@ -43,18 +43,18 @@ void Renderer::draw(const Level* level)
 {
     draw(level->battle_grid_entity);
     draw(level->spawned_enemies);
-    
     draw(level->built_towers);
-    draw(level->shells);
+    draw(level->launched_shells);
 }
 
-void Renderer::draw(const std::list<ShellEntity>& shells) 
+void Renderer::draw(const std::list<ShellEntity>& launched_shells)
 {
-        for (auto& shell : shells) {
-        auto coord = shell.getCoordinate();
-        auto vao = shell.getMesh()->getVAO();
-        auto size = shell.getMesh()->getSize();
-        auto color = shell.getProps().getColor();
+    for (auto shell_it = launched_shells.begin(); shell_it != launched_shells.end(); shell_it++) {
+        GLuint vao = shell_it->getMesh()->getVAO();
+        unsigned int size = shell_it->getMesh()->getSize();
+
+        const auto& coord = shell_it->getCoordinate();
+        const auto& color = shell_it->getProps().getColor();
 
         glm::mat4 PVM = pv_matrix * glm::translate(glm::mat4(1.0f), glm::vec3(coord, 0.0f));
 
@@ -73,11 +73,12 @@ void Renderer::draw(const std::list<ShellEntity>& shells)
 
 void Renderer::draw(const std::list<EnemyEntity>& enemies)
 {
-    for (auto& en : enemies) {
-        auto coord = en.getCoordinate();
-        auto vao = en.getEnemy()->getMesh()->getVAO();
-        auto size = en.getEnemy()->getMesh()->getSize();
-        auto color = en.getEnemy()->getProps().getColor();
+    for (auto& enemy : enemies) {
+        GLuint vao = enemy.getEnemy()->getMesh()->getVAO();
+        unsigned int size = enemy.getEnemy()->getMesh()->getSize();
+
+        const auto& coord = enemy.getCoordinate();
+        const auto& color = enemy.getEnemy()->getProps().getColor();
 
         glm::mat4 PVM = pv_matrix * glm::translate(glm::mat4(1.0f), glm::vec3(coord, 0.0f));
 
@@ -94,13 +95,14 @@ void Renderer::draw(const std::list<EnemyEntity>& enemies)
     }
 }
 
-void Renderer::draw(const std::vector<TowerEntity>& towers)
+void Renderer::draw(const LevelTowerEStorage& towers)
 {
     for (auto& tower : towers) {
-        auto coord = tower.getCoordinate();
-        auto vao = tower.getTower()->getMeshT()->getVAO();
-        auto size = tower.getTower()->getMeshT()->getSize();
-        auto color = tower.getTower()->getPropsT().getColor();
+        GLuint vao = tower.getTower()->getMeshT()->getVAO();
+        unsigned int size = tower.getTower()->getMeshT()->getSize();
+
+        const auto& coord = tower.getCoordinate();
+        const auto& color = tower.getTower()->getPropsT().getColor();
 
         glm::mat4 PVM = pv_matrix * glm::translate(glm::mat4(1.0f), glm::vec3(coord, 0.0f));
 
@@ -119,13 +121,16 @@ void Renderer::draw(const std::vector<TowerEntity>& towers)
 
 void Renderer::draw(const BattleGridEntity& grid)
 {
+    GLuint vao = grid.mesh().getVAO();
+    unsigned int size = grid.mesh().getSize();
+
     shader_grid.start();
     shader_grid.setUniform("PVM", pv_matrix);
 
-    gl::BindVertexArray(grid.mesh().getVAO());
+    gl::BindVertexArray(vao);
     gl::EnableVertexAttribArray(0);
     gl::EnableVertexAttribArray(1);
-    gl::DrawArrays(gl::POINTS, 0, grid.mesh().getSize());
+    gl::DrawArrays(gl::POINTS, 0, size);
 
     gl::BindVertexArray(0);
 
@@ -134,11 +139,12 @@ void Renderer::draw(const BattleGridEntity& grid)
 
 void Renderer::drawTowerForBuilding(const TowerEntity* tower)
 {
-    auto coord = tower->getCoordinate();
-    auto vao = tower->getTower()->getMeshT()->getVAO();
-    auto size = tower->getTower()->getMeshT()->getSize();
+    GLuint vao = tower->getTower()->getMeshT()->getVAO();
+    unsigned int size = tower->getTower()->getMeshT()->getSize();
+
     auto color = tower->getTower()->getPropsT().getColor();
-    color.a = 0.2;
+    const auto& coord = tower->getCoordinate();
+    color.a = 0.4;
 
     glm::mat4 PVM = pv_matrix * glm::translate(glm::mat4(1.0f), glm::vec3(coord, 0.0f));
 

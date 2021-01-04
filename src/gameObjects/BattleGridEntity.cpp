@@ -1,14 +1,15 @@
 #include "BattleGridEntity.hpp"
 
-#include <exception>
+#include <cmath>
 #include <glm/glm.hpp>
+#include <stdexcept>
 
 void BattleGridEntity::makeRoad(glm::uvec2 A, glm::uvec2 B)
 {
-    const int deltaX = abs(B.x - A.x);
-    const int deltaY = abs(B.y - A.y);
-    const int signX = A.x < B.x ? 1 : -1;
-    const int signY = A.y < B.y ? 1 : -1;
+    int deltaX = std::abs((int)B.x - (int)A.x);
+    int deltaY = std::abs((int)B.y - (int)A.y);
+    int signX = A.x < B.x ? 1 : -1;
+    int signY = A.y < B.y ? 1 : -1;
     int error = deltaX - deltaY;
 
     this->grid[B.y * this->widht + B.x].type = Cell::Type::ROAD;
@@ -30,11 +31,16 @@ void BattleGridEntity::makeRoad(glm::uvec2 A, glm::uvec2 B)
 BattleGridEntity::BattleGridEntity()
     : _mesh()
 {
+    grid = nullptr;
+    widht = 0;
+    height = 0;
+    scale = 0;
 }
 
 BattleGridEntity::~BattleGridEntity()
 {
     _mesh.destroy();
+    delete grid;
 }
 
 void BattleGridEntity::init(unsigned int w, unsigned int h, float scale,
@@ -77,7 +83,7 @@ void BattleGridEntity::setDefaultColorMap()
     this->color_map[Cell::Type::EMPTY] = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
     this->color_map[Cell::Type::BLOCK] = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
     this->color_map[Cell::Type::ROAD] = glm::vec4(0.1f, 0.1f, 0.1f, 0.0f);
-    this->color_map[Cell::Type::TOWER] = glm::vec4(1.0f, 1.0f, 1.0f, 0.3f);
+    this->color_map[Cell::Type::TOWER] = glm::vec4(0.1f, 0.2f, 0.0f, 1.0f);
 }
 
 const BattleGridEntity::Cell& BattleGridEntity::getCell(glm::uvec2 pos)

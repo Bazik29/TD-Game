@@ -142,8 +142,3 @@ target_link_libraries(game_src utils gl_core glm::glm glfw nlohmann_json::nlohma
 add_executable(${PROJECT_NAME} ${TARGER_SRC} src/target/main.cpp)
 target_link_libraries(${PROJECT_NAME} game_src)
 target_compile_options(${PROJECT_NAME} PRIVATE ${COMPILE_FLAGS})
-
-add_executable(test src/target/test.cpp)
-target_include_directories(test PUBLIC ${GAME_SRC_INC})
-target_link_libraries(test game_src)
-

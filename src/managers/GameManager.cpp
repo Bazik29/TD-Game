@@ -42,16 +42,16 @@ void GameManager::init()
 
         _input->init(*_window);
 
-        _camera->eye = vec3(6, 5, 21);
+        _camera->eye = vec3(6, 5, 13);
         _camera->center = vec3(6, 5, 0);
         _camera->up = vec3(0, 1, 0);
 
         mat4 view = lookAt(_camera->eye, _camera->center, _camera->up);
-        projection = perspective(glm::radians(45.f), _window->getWidht() * 1.f / _window->getHeight(), 0.1f, 100.0f);
-
-        // float aspect = (float)_window->getWidht() / (float)_window->getHeight();
-        // float n = 8;
-        // projection = ortho(-n, n, -n * aspect, n * aspect, 0.1f, 100.0f);
+        float aspect = (float)_window->getWidht() / (float)_window->getHeight();
+        float FOV = 45.f;
+        // projection = perspective(glm::radians(FOV), aspect, 0.1f, 100.0f);
+        // projection = ortho(-6.f, 6.f, -5.f * aspect, 5.f * aspect, 0.1f, 100.0f);
+        projection = ortho(-6.f, 6.f, -5.f, 5.f, 0.1f, 100.0f);
 
         _render->init();
         _render->setProjectionMatrix(projection);
@@ -98,7 +98,6 @@ void GameManager::run()
                 _window->close();
                 break;
             }
-
             if (_input->isKeyDown(Input::Keyboard::Q)) {
                 _battle_mng->selectedTowerForBuild(&_resource_mng->loaded_towers[0]);
             }
@@ -108,11 +107,7 @@ void GameManager::run()
             }
             if (_input->isKeyDown(Input::Keyboard::E)) {
                 bool res = _battle_mng->tryBuildSelectedTower();
-
-                if (res)
-                    std::cout << "The tower was built\n";
-                else
-                    std::cout << "You can't build here!\n";
+                std::cout << res ? "The tower was built\n" : "You can't build here!\n";
             }
 
             _battle_mng->update(dt, mouse_world);
@@ -120,6 +115,7 @@ void GameManager::run()
             gl::Clear(gl::COLOR_BUFFER_BIT);
 
             _render->draw(_battle_mng->getLevel());
+
             auto project_tower = _battle_mng->getTowerForBuilding();
             if (project_tower)
                 _render->drawTowerForBuilding(project_tower);

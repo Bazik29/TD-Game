@@ -1,15 +1,18 @@
 #pragma once
 
+#include "BattleGridEntity.hpp"
 #include "EnemyEntity.hpp"
 #include "EnemyQueue.hpp"
 #include "EnemyWay.hpp"
-#include "TowerEntity.hpp"
-#include "BattleGridEntity.hpp"
 #include "ShellEntity.hpp"
+#include "TowerEntity.hpp"
 
 #include <list>
-#include <vector>
 #include <string>
+#include <vector>
+
+// DO NOT USE VECTOR or anything else with changing pointers to element
+using LevelTowerEStorage = std::list<TowerEntity>;
 
 struct LevelDiscription {
     int serial_number = 0;
@@ -23,7 +26,7 @@ struct Level {
     EnemyQueue enemy_spawn_queue;
 
     BattleGridEntity battle_grid_entity;
-    std::vector<TowerEntity> built_towers;
+    LevelTowerEStorage built_towers;
     std::list<EnemyEntity> spawned_enemies;
-    std::list<ShellEntity> shells;
+    std::list<ShellEntity> launched_shells;
 };

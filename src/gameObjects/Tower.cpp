@@ -24,3 +24,44 @@ void Tower::init(const TowerProperty& property_t, const ElementsMeshGl* mesh_t,
 Tower::~Tower()
 {
 }
+
+Tower::Tower(const Tower& other)
+    : property_t(other.property_t)
+    , property_s(other.property_s)
+{
+    this->property_t = other.property_t;
+    this->mesh_t = other.mesh_t;
+    this->property_s = other.property_s;
+    this->mesh_s = other.mesh_s;
+}
+
+Tower::Tower(Tower&& other)
+    : property_t(other.property_t)
+    , property_s(other.property_s)
+
+{
+    this->property_t = other.property_t;
+    this->mesh_t = other.mesh_t;
+    this->property_s = other.property_s;
+    this->mesh_s = other.mesh_s;
+}
+
+Tower& Tower::operator=(const Tower& other)
+{
+    this->property_t = other.property_t;
+    this->mesh_t = other.mesh_t;
+    this->property_s = other.property_s;
+    this->mesh_s = other.mesh_s;
+
+    return *this;
+}
+
+Tower& Tower::operator=(Tower&& other)
+{
+    this->property_t = other.property_t;
+    this->mesh_t = other.mesh_t;
+    this->property_s = other.property_s;
+    this->mesh_s = other.mesh_s;
+
+    return *this;
+}

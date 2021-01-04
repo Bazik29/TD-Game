@@ -9,10 +9,10 @@ public:
     Tower(const TowerProperty& property_t, const ElementsMeshGl* mesh_t,
         const ShellProperty& property_s, const ElementsMeshGl* mesh_s);
     ~Tower();
-    Tower(const Tower& other) = default;
-    Tower(Tower&& other) = default;
-    Tower& operator=(const Tower& other) = default;
-    Tower& operator=(Tower&& other) = default;
+    Tower(const Tower& other);
+    Tower(Tower&& other);
+    Tower& operator=(const Tower& other);
+    Tower& operator=(Tower&& other);
 
     void init(const TowerProperty& property_t, const ElementsMeshGl* mesh_t,
         const ShellProperty& property_s, const ElementsMeshGl* mesh_s);

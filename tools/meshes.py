@@ -97,17 +97,17 @@ def make_arrow(r):
 }
 
 
-enemy = make_polyhedron(0.5, 8)
+enemy = make_polyhedron(0.4, 64)
 
 with open("../resources/enemies/enemy_mesh.json", "w") as write_file:
     json.dump(enemy, write_file, indent=4)
 
-tower = make_square(0.4)
+tower = make_square(0.35)
 
 with open("../resources/towers/tower_mesh.json", "w") as write_file:
     json.dump(tower, write_file, indent=4)
 
-shell = make_arrow(0.1)
+shell = make_arrow(0.2)
 
 with open("../resources/towers/shell_mesh.json", "w") as write_file:
     json.dump(shell, write_file, indent=4)

@@ -17,3 +17,35 @@ ShellEntity::ShellEntity(const TowerEntity* tower, EnemyEntity* enemy)
 ShellEntity::~ShellEntity()
 {
 }
+
+ShellEntity::ShellEntity(const ShellEntity& other)
+{
+    this->tower = other.tower;
+    this->enemy = other.enemy;
+    coordinate = other.coordinate;
+}
+
+ShellEntity::ShellEntity(ShellEntity&& other)
+{
+    this->tower = other.tower;
+    this->enemy = other.enemy;
+    coordinate = other.coordinate;
+}
+
+ShellEntity& ShellEntity::operator=(const ShellEntity& other)
+{
+    this->tower = other.tower;
+    this->enemy = other.enemy;
+    coordinate = other.coordinate;
+
+    return *this;
+}
+
+ShellEntity& ShellEntity::operator=(ShellEntity&& other)
+{
+    this->tower = other.tower;
+    this->enemy = other.enemy;
+    coordinate = other.coordinate;
+
+    return *this;
+}

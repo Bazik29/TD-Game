@@ -47,7 +47,6 @@ private:
     void updateEnemies(const float& dt);
     void towersAttack(const float& dt);
 
-    void launchShell(TowerEntity* const tower, EnemyEntity* const enemy);
     void updateShells(const float& dt);
     std::list<ShellEntity>::iterator deleteShellt(std::list<ShellEntity>::iterator it);
 

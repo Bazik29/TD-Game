@@ -13,6 +13,36 @@ ElementsMeshGl::~ElementsMeshGl()
 {
 }
 
+ElementsMeshGl::ElementsMeshGl(const ElementsMeshGl& other)
+    : MeshGl()
+{
+    this->buff_coords = other.buff_coords;
+    this->buff_indices = other.buff_indices;
+}
+
+ElementsMeshGl::ElementsMeshGl(ElementsMeshGl&& other)
+    : MeshGl()
+{
+    this->buff_coords = other.buff_coords;
+    this->buff_indices = other.buff_indices;
+}
+
+ElementsMeshGl& ElementsMeshGl::operator=(const ElementsMeshGl& other)
+{
+    this->buff_coords = other.buff_coords;
+    this->buff_indices = other.buff_indices;
+
+    return *this;
+}
+
+ElementsMeshGl& ElementsMeshGl::operator=(ElementsMeshGl&& other)
+{
+    this->buff_coords = other.buff_coords;
+    this->buff_indices = other.buff_indices;
+
+    return *this;
+}
+
 void ElementsMeshGl::create(PrimitiveType type,
     const std::vector<glm::vec2>& vertices_coord,
     const std::vector<GLuint>& indices,

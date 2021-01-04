@@ -9,10 +9,10 @@ public:
     ShellEntity(const TowerEntity* tower, EnemyEntity* enemy);
 
     ~ShellEntity();
-    ShellEntity(const ShellEntity& other) = default;
-    ShellEntity(ShellEntity&& other) = default;
-    ShellEntity& operator=(const ShellEntity& other) = default;
-    ShellEntity& operator=(ShellEntity&& other) = default;
+    ShellEntity(const ShellEntity& other);
+    ShellEntity(ShellEntity&& other);
+    ShellEntity& operator=(const ShellEntity& other);
+    ShellEntity& operator=(ShellEntity&& other);
 
     inline const TowerEntity* getTowerE() const;
     inline EnemyEntity* getEnemyE() const;

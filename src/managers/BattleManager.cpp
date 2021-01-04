@@ -1,8 +1,6 @@
 #include "BattleManager.hpp"
 
 #include <glm/geometric.hpp>
-#include <iostream>
-#include <utility>
 
 BattleManager::BattleManager()
 {
@@ -39,7 +37,6 @@ void BattleManager::update(const float& dt, const glm::vec2& cursor)
             // hide
             tower_for_build->setCoordinate(glm::vec2(-100, -100));
     }
-
     spawnEnemyFromQueue(dt);
     updateShells(dt);
     updateEnemies(dt);
@@ -57,11 +54,11 @@ bool BattleManager::tryBuildSelectedTower()
     if (tower_for_build) {
         bool check = level->battle_grid_entity.checkForTowerWorldCoord(cursor);
         if (check) {
-            level->built_towers.push_back(std::move(*tower_for_build));
+            level->built_towers.emplace_back(tower_for_build->getTower(), tower_for_build->getCoordinate());
             delete tower_for_build;
             tower_for_build = nullptr;
-
-            return level->battle_grid_entity.buildTowerWorldCoord(cursor, &level->built_towers.back());
+            auto last = &level->built_towers.back();
+            return level->battle_grid_entity.buildTowerWorldCoord(cursor, last);
         }
     }
     return false;
@@ -137,11 +134,16 @@ void BattleManager::towersAttack(const float& dt)
 {
     for (auto it_t = level->built_towers.begin(); it_t != level->built_towers.end(); it_t++) {
         if (it_t->getReloadTimer() <= 0.f) {
-            // launch shell
             for (auto it_e = level->spawned_enemies.begin(); it_e != level->spawned_enemies.end(); it_e++) {
                 if (glm::length(it_t->getCoordinate() - it_e->getCoordinate()) <= it_t->getTower()->getPropsT().getAttackRadius()) {
-                    launchShell(&(*it_t), &(*it_e));
-                    break;
+                    // launch shell
+                    if (it_e->getHP() > 0) {
+                        it_t->Unload();
+                        it_t->incNumShells();
+                        it_e->incHauntShells();
+                        level->launched_shells.emplace_back(&(*it_t), &(*it_e));
+                        break;
+                    }
                 }
             }
         } else
@@ -149,20 +151,10 @@ void BattleManager::towersAttack(const float& dt)
     }
 }
 
-void BattleManager::launchShell(TowerEntity* const tower, EnemyEntity* const enemy)
-{
-    if (enemy->getHP() > 0) {
-        tower->Unload();
-        tower->incNumShells();
-        enemy->incHauntShells();
-        level->shells.push_back(ShellEntity(tower, enemy));
-    }
-}
-
 void BattleManager::updateShells(const float& dt)
 {
-    auto it = level->shells.begin();
-    while (it != level->shells.end()) {
+    auto it = level->launched_shells.begin();
+    while (it != level->launched_shells.end()) {
 
         glm::vec2 dir = it->getEnemyE()->getCoordinate() - it->getCoordinate();
         float dist = glm::length(dir);
@@ -188,18 +180,17 @@ void BattleManager::updateShells(const float& dt)
 
 std::list<ShellEntity>::iterator BattleManager::deleteShellt(std::list<ShellEntity>::iterator it)
 {
-    return level->shells.erase(it);
+    return level->launched_shells.erase(it);
 }
 
 void BattleManager::damageTown(unsigned int dmg)
 {
-    // std::cout << "damageTown: -" << dmg << "\n";
+    //
 }
 
 void BattleManager::createEnemyEntity(const Enemy* enemy)
 {
-    EnemyEntity ee(enemy, enemy_spawn_point);
-    level->spawned_enemies.push_back(std::move(ee));
+    level->spawned_enemies.push_back(EnemyEntity(enemy, enemy_spawn_point));
 }
 
 std::list<EnemyEntity>::iterator BattleManager::deleteEnemy(std::list<EnemyEntity>::iterator it)

@@ -23,7 +23,7 @@ public:
     inline void difHP(int diff);
 
     inline int getHauntShells() const;
-    inline void setHauntShells(int shells);
+    inline void setHauntShells(int launched_shells);
     inline void incHauntShells();
     inline void redHauttSheels();
 
@@ -67,9 +67,9 @@ inline int EnemyEntity::getHauntShells() const
     return haunt_shells;
 }
 
-inline void EnemyEntity::setHauntShells(int shells)
+inline void EnemyEntity::setHauntShells(int launched_shells)
 {
-    haunt_shells = shells;
+    haunt_shells = launched_shells;
 }
 
 inline void EnemyEntity::incHauntShells()

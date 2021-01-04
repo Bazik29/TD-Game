@@ -27,19 +27,19 @@ private:
     glm::mat4 projection;
     glm::mat4 pv_matrix;
 
-    void draw(const std::list<ShellEntity>& shells);
+    void draw(const std::list<ShellEntity>& launched_shells);
     void draw(const std::list<EnemyEntity>& enemies);
-    void draw(const std::vector<TowerEntity>& towers);
+    void draw(const LevelTowerEStorage& towers);
     void draw(const BattleGridEntity& grid);
 };
 
-inline void Renderer::setViewMatrix(const glm::mat4 view) 
+inline void Renderer::setViewMatrix(const glm::mat4 view)
 {
-    this->view = view;  
-    pv_matrix = projection * view;  
+    this->view = view;
+    pv_matrix = projection * view;
 }
 
-inline void Renderer::setProjectionMatrix(const glm::mat4 projection) 
+inline void Renderer::setProjectionMatrix(const glm::mat4 projection)
 {
     this->projection = projection;
     pv_matrix = projection * view;
