@@ -144,7 +144,7 @@ void Renderer::drawTowerForBuilding(const TowerEntity* tower)
 
     auto color = tower->getTower()->getPropsT().getColor();
     const auto& coord = tower->getCoordinate();
-    color.a = 0.4;
+    color.a = 0.7;
 
     glm::mat4 PVM = pv_matrix * glm::translate(glm::mat4(1.0f), glm::vec3(coord, 0.0f));
 

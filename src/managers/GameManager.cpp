@@ -64,6 +64,8 @@ void GameManager::init()
         _battle_mng->setLevel(&_level);
 
         gl::ClearColor(0.2, 0.2, 0.2, 1);
+        gl::Enable(gl::BLEND);
+        gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA);
 
     } catch (const std::exception& e) {
         std::cerr << e.what() << '\n';
