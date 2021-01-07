@@ -1,10 +1,8 @@
-#include <managers/GameManager.hpp>
+#include <Game.hpp>
 
 int main()
 {
-    GameManager game;
-    game.init();
+    Game game;
     game.run();
-    game.destroy();
     return 0;
 }

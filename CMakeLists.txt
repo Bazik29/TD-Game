@@ -90,7 +90,7 @@ set(GAME_SRC_HPP
 
 	src/managers/BattleManager.hpp
 	src/managers/ResourceManager.hpp
-	src/managers/GameManager.hpp
+	src/Game.hpp
 
 	src/renderObjects/BattleGridMeshGl.hpp
 	src/renderObjects/ElementsMeshGl.hpp
@@ -118,7 +118,7 @@ set(GAME_SRC_CPP
 
 	src/managers/BattleManager.cpp
 	src/managers/ResourceManager.cpp
-	src/managers/GameManager.cpp
+	src/Game.cpp
 
 
 	src/renderObjects/BattleGridMeshGl.cpp
