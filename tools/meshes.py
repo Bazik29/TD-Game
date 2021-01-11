@@ -70,20 +70,20 @@ def make_arrow(r):
     return {
     "vertices": [
         {
-            "x": 0,
-            "y": r
-        },
-        {
             "x": r,
-            "y": -r
-        },
-        {
-            "x": 0,
-            "y": -r/2.0
+            "y": 0
         },
         {
             "x": -r,
             "y": -r
+        },
+        {
+            "x": -r/2.0,
+            "y": 0
+        },
+        {
+            "x": -r,
+            "y": r
         }
     ],
     "indices": [

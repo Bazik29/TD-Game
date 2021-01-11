@@ -102,16 +102,16 @@ void Game::initializing()
     }
 
     _camera = new Camera();
-    _camera->eye = vec3(6, 5, 13);
+    _camera->eye = vec3(6, 0, 13);
     _camera->center = vec3(6, 5, 0);
     _camera->up = vec3(0, 1, 0);
     mat4 view = lookAt(_camera->eye, _camera->center, _camera->up);
 
-    // float aspect = (float)_window->getWidht() / (float)_window->getHeight();
-    // float FOV = 45.f;
-    // projection = perspective(glm::radians(FOV), aspect, 0.1f, 100.0f);
+    float aspect = (float)_window->getWidht() / (float)_window->getHeight();
+    float FOV = 45.f;
+    projection = perspective(glm::radians(FOV), aspect, 0.1f, 100.0f);
     // projection = ortho(-6.f, 6.f, -5.f * aspect, 5.f * aspect, 0.1f, 100.0f);
-    projection = ortho(-6.f, 6.f, -5.f, 5.f, 0.1f, 100.0f);
+    // projection = ortho(-6.f, 6.f, -5.f, 5.f, 0.1f, 100.0f);
 
     _render->setProjectionMatrix(projection);
     _render->setViewMatrix(view);

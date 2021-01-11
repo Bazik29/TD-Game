@@ -48,7 +48,6 @@ private:
     void towersAttack(const float& dt);
 
     void updateShells(const float& dt);
-    std::list<ShellEntity>::iterator deleteShellt(std::list<ShellEntity>::iterator it);
 
     void damageTown(unsigned int dmg);
 

@@ -80,7 +80,7 @@ void BattleGridEntity::init(unsigned int w, unsigned int h, float scale,
 
 void BattleGridEntity::setDefaultColorMap()
 {
-    this->color_map[Cell::Type::EMPTY] = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+    this->color_map[Cell::Type::EMPTY] = glm::vec4(60.0f/255, 170.0f/255, 60.0f/255, 1.0f);
     this->color_map[Cell::Type::BLOCK] = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
     this->color_map[Cell::Type::ROAD] = glm::vec4(0.1f, 0.1f, 0.1f, 0.0f);
     this->color_map[Cell::Type::TOWER] = glm::vec4(0.1f, 0.2f, 0.0f, 1.0f);

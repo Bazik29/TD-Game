@@ -2,6 +2,7 @@
 
 #include <gl_core_4_3.hpp>
 #include <glm/ext/matrix_transform.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 #include <glm/matrix.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
@@ -56,7 +57,11 @@ void Renderer::draw(const std::list<ShellEntity>& launched_shells)
         const auto& coord = shell_it->getCoordinate();
         const auto& color = shell_it->getProps().getColor();
 
-        glm::mat4 PVM = pv_matrix * glm::translate(glm::mat4(1.0f), glm::vec3(coord, 0.0f));
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(coord, 0.0f));
+        model = glm::rotate(model, shell_it->getAngle(), glm::vec3(0.0, 0.0, 1.0));
+
+        glm::mat4 PVM = pv_matrix * model;
 
         shader.start();
         shader.setUniform("color", color);

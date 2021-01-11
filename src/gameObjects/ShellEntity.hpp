@@ -2,6 +2,7 @@
 
 #include "EnemyEntity.hpp"
 #include "TowerEntity.hpp"
+#include <glm/vec3.hpp>
 
 class ShellEntity {
 public:
@@ -23,11 +24,15 @@ public:
     inline const glm::vec2& getCoordinate() const;
     inline void move(const glm::vec2& delta);
 
+    inline void setAngle(const float& ang);
+    inline const float& getAngle() const;
+
 private:
     const TowerEntity* tower;
     EnemyEntity* enemy;
 
     glm::vec2 coordinate;
+    float angle;
 };
 
 inline const TowerEntity* ShellEntity::getTowerE() const
@@ -58,4 +63,14 @@ inline const glm::vec2& ShellEntity::getCoordinate() const
 inline void ShellEntity::move(const glm::vec2& delta)
 {
     coordinate += delta;
+}
+
+inline void ShellEntity::setAngle(const float& ang) 
+{
+    angle = ang;
+}
+
+inline const float& ShellEntity::getAngle() const
+{
+    return angle;
 }

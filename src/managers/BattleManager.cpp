@@ -1,5 +1,6 @@
 #include "BattleManager.hpp"
 
+#include <cmath>
 #include <glm/geometric.hpp>
 
 BattleManager::BattleManager()
@@ -122,9 +123,11 @@ void BattleManager::updateEnemies(const float& dt)
 
         } else {
             auto dmg = it->getEnemy()->getProps().getDamage();
-            damageTown(dmg);
-            it = deleteEnemy(it);
-            continue;
+            damageTown(dmg); // TODO: fix
+            if (it->getHauntShells() == 0) {
+                it = deleteEnemy(it);
+                continue;
+            }
         }
         it++;
     }
@@ -155,9 +158,13 @@ void BattleManager::updateShells(const float& dt)
 {
     auto it = level->launched_shells.begin();
     while (it != level->launched_shells.end()) {
-
         glm::vec2 dir = it->getEnemyE()->getCoordinate() - it->getCoordinate();
         float dist = glm::length(dir);
+
+        float a = it->getAngle();
+        glm::vec2 last_dir(std::cos(a), std::sin(a));
+        float AAA = std::atan2(dir.y, dir.x) - std::atan2(last_dir.y, last_dir.x);
+        it->setAngle(a + AAA);
 
         glm::vec2 dir_n(0.f);
         if (dir.x != 0 || dir.y != 0)
@@ -169,18 +176,13 @@ void BattleManager::updateShells(const float& dt)
             dway = dir;
             it->getEnemyE()->redHauttSheels();
             it->getEnemyE()->difHP(-it->getTowerE()->getTower()->getPropsT().getDamage());
-            it = deleteShellt(it);
+            it = level->launched_shells.erase(it);
             continue;
         }
 
         it->move(dway);
         it++;
     }
-}
-
-std::list<ShellEntity>::iterator BattleManager::deleteShellt(std::list<ShellEntity>::iterator it)
-{
-    return level->launched_shells.erase(it);
 }
 
 void BattleManager::damageTown(unsigned int dmg)
